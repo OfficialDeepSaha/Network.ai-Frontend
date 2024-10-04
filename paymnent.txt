@@ -1,0 +1,497 @@
+<div
+  className="relative flex size-full min-h-screen flex-col bg-[#111922] dark group/design-root overflow-x-hidden"
+  style={{ fontFamily: 'Manrope, "Noto Sans", sans-serif' }}
+>
+  <div className="layout-container flex h-full grow flex-col">
+    <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#243547] px-10 py-3">
+      <div className="flex items-center gap-4 text-white">
+        <div className="size-4">
+          <svg
+            viewBox="0 0 48 48"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <g clipPath="url(#clip0_6_330)">
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M24 0.757355L47.2426 24L24 47.2426L0.757355 24L24 0.757355ZM21 35.7574V12.2426L9.24264 24L21 35.7574Z"
+                fill="currentColor"
+              />
+            </g>
+            <defs>
+              <clipPath id="clip0_6_330">
+                <rect width={48} height={48} fill="white" />
+              </clipPath>
+            </defs>
+          </svg>
+        </div>
+        <h2 className="text-white text-lg font-bold leading-tight tracking-[-0.015em]">
+          PixelCraft
+        </h2>
+      </div>
+      <div className="flex flex-1 justify-end gap-8">
+        <div className="flex items-center gap-9">
+          <a className="text-white text-sm font-medium leading-normal" href="#">
+            Home
+          </a>
+          <a className="text-white text-sm font-medium leading-normal" href="#">
+            Features
+          </a>
+          <a className="text-white text-sm font-medium leading-normal" href="#">
+            Pricing
+          </a>
+          <a className="text-white text-sm font-medium leading-normal" href="#">
+            Resources
+          </a>
+        </div>
+        <div className="flex gap-2">
+          <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#197ce6] text-white text-sm font-bold leading-normal tracking-[0.015em]">
+            <span className="truncate">Sign in</span>
+          </button>
+          <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#243547] text-white text-sm font-bold leading-normal tracking-[0.015em]">
+            <span className="truncate">Start free trial</span>
+          </button>
+        </div>
+      </div>
+    </header>
+    <div className="px-40 flex flex-1 justify-center py-5">
+      <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
+        <h2 className="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">
+          Start free trial
+        </h2>
+        <div className="@container">
+          <div className="@[480px]:p-4">
+            <div
+              className="flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat @[480px]:gap-8 @[480px]:rounded-xl items-center justify-center p-4"
+              style={{
+                backgroundImage:
+                  'linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%), url("https://cdn.usegalileo.ai/sdxl10/d9ec2d20-7da5-4a44-91c2-49962e60b400.png")'
+              }}
+            >
+              <div className="flex flex-col gap-2 text-center">
+                <h1 className="text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-5xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em]">
+                  The best design tool for your next project
+                </h1>
+                <h2 className="text-white text-sm font-normal leading-normal @[480px]:text-base @[480px]:font-normal @[480px]:leading-normal">
+                  Design anything in minutes with thousands of beautiful
+                  templates and elements.
+                </h2>
+              </div>
+              <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#197ce6] text-white text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em]">
+                <span className="truncate">Get started</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <h2 className="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">
+          Choose a plan
+        </h2>
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(228px,1fr))] gap-2.5 px-4 py-3 @3xl:grid-cols-4">
+          <div className="flex flex-1 flex-col gap-4 rounded-xl border border-solid border-[#344c65] bg-[#1a2632] p-6">
+            <div className="flex flex-col gap-1">
+              <h1 className="text-white text-base font-bold leading-tight">
+                Free
+              </h1>
+              <p className="flex items-baseline gap-1 text-white">
+                <span className="text-white text-4xl font-black leading-tight tracking-[-0.033em]">
+                  $0
+                </span>
+                <span className="text-white text-base font-bold leading-tight">
+                  /month
+                </span>
+              </p>
+            </div>
+            <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#243547] text-white text-sm font-bold leading-normal tracking-[0.015em]">
+              <span className="truncate">Start free trial</span>
+            </button>
+            <div className="flex flex-col gap-2">
+              <div className="text-[13px] font-normal leading-normal flex gap-3 text-white">
+                <div
+                  className="text-white"
+                  data-icon="Check"
+                  data-size="20px"
+                  data-weight="regular"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20px"
+                    height="20px"
+                    fill="currentColor"
+                    viewBox="0 0 256 256"
+                  >
+                    <path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z" />
+                  </svg>
+                </div>
+                Unlimited designs
+              </div>
+              <div className="text-[13px] font-normal leading-normal flex gap-3 text-white">
+                <div
+                  className="text-white"
+                  data-icon="Check"
+                  data-size="20px"
+                  data-weight="regular"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20px"
+                    height="20px"
+                    fill="currentColor"
+                    viewBox="0 0 256 256"
+                  >
+                    <path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z" />
+                  </svg>
+                </div>
+                100+ templates
+              </div>
+              <div className="text-[13px] font-normal leading-normal flex gap-3 text-white">
+                <div
+                  className="text-white"
+                  data-icon="Check"
+                  data-size="20px"
+                  data-weight="regular"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20px"
+                    height="20px"
+                    fill="currentColor"
+                    viewBox="0 0 256 256"
+                  >
+                    <path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z" />
+                  </svg>
+                </div>
+                1 team member
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-1 flex-col gap-4 rounded-xl border border-solid border-[#344c65] bg-[#1a2632] p-6">
+            <div className="flex flex-col gap-1">
+              <h1 className="text-white text-base font-bold leading-tight">
+                Pro
+              </h1>
+              <p className="flex items-baseline gap-1 text-white">
+                <span className="text-white text-4xl font-black leading-tight tracking-[-0.033em]">
+                  $12
+                </span>
+                <span className="text-white text-base font-bold leading-tight">
+                  /month
+                </span>
+              </p>
+            </div>
+            <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#243547] text-white text-sm font-bold leading-normal tracking-[0.015em]">
+              <span className="truncate">Start free trial</span>
+            </button>
+            <div className="flex flex-col gap-2">
+              <div className="text-[13px] font-normal leading-normal flex gap-3 text-white">
+                <div
+                  className="text-white"
+                  data-icon="Check"
+                  data-size="20px"
+                  data-weight="regular"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20px"
+                    height="20px"
+                    fill="currentColor"
+                    viewBox="0 0 256 256"
+                  >
+                    <path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z" />
+                  </svg>
+                </div>
+                Everything in Free, plus:
+              </div>
+              <div className="text-[13px] font-normal leading-normal flex gap-3 text-white">
+                <div
+                  className="text-white"
+                  data-icon="Check"
+                  data-size="20px"
+                  data-weight="regular"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20px"
+                    height="20px"
+                    fill="currentColor"
+                    viewBox="0 0 256 256"
+                  >
+                    <path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z" />
+                  </svg>
+                </div>
+                Unlimited designs
+              </div>
+              <div className="text-[13px] font-normal leading-normal flex gap-3 text-white">
+                <div
+                  className="text-white"
+                  data-icon="Check"
+                  data-size="20px"
+                  data-weight="regular"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20px"
+                    height="20px"
+                    fill="currentColor"
+                    viewBox="0 0 256 256"
+                  >
+                    <path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z" />
+                  </svg>
+                </div>
+                200+ templates
+              </div>
+              <div className="text-[13px] font-normal leading-normal flex gap-3 text-white">
+                <div
+                  className="text-white"
+                  data-icon="Check"
+                  data-size="20px"
+                  data-weight="regular"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20px"
+                    height="20px"
+                    fill="currentColor"
+                    viewBox="0 0 256 256"
+                  >
+                    <path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z" />
+                  </svg>
+                </div>
+                Custom fonts
+              </div>
+              <div className="text-[13px] font-normal leading-normal flex gap-3 text-white">
+                <div
+                  className="text-white"
+                  data-icon="Check"
+                  data-size="20px"
+                  data-weight="regular"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20px"
+                    height="20px"
+                    fill="currentColor"
+                    viewBox="0 0 256 256"
+                  >
+                    <path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z" />
+                  </svg>
+                </div>
+                Create custom palettes
+              </div>
+              <div className="text-[13px] font-normal leading-normal flex gap-3 text-white">
+                <div
+                  className="text-white"
+                  data-icon="Check"
+                  data-size="20px"
+                  data-weight="regular"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20px"
+                    height="20px"
+                    fill="currentColor"
+                    viewBox="0 0 256 256"
+                  >
+                    <path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z" />
+                  </svg>
+                </div>
+                Export to PNG, JPEG
+              </div>
+              <div className="text-[13px] font-normal leading-normal flex gap-3 text-white">
+                <div
+                  className="text-white"
+                  data-icon="Check"
+                  data-size="20px"
+                  data-weight="regular"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20px"
+                    height="20px"
+                    fill="currentColor"
+                    viewBox="0 0 256 256"
+                  >
+                    <path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z" />
+                  </svg>
+                </div>
+                Import from Figma, Sketch
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-1 flex-col gap-4 rounded-xl border border-solid border-[#344c65] bg-[#1a2632] p-6">
+            <div className="flex flex-col gap-1">
+              <h1 className="text-white text-base font-bold leading-tight">
+                Team
+              </h1>
+              <p className="flex items-baseline gap-1 text-white">
+                <span className="text-white text-4xl font-black leading-tight tracking-[-0.033em]">
+                  $9
+                </span>
+                <span className="text-white text-base font-bold leading-tight">
+                  per editor/month
+                </span>
+              </p>
+            </div>
+            <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#243547] text-white text-sm font-bold leading-normal tracking-[0.015em]">
+              <span className="truncate">Start free trial</span>
+            </button>
+            <div className="flex flex-col gap-2">
+              <div className="text-[13px] font-normal leading-normal flex gap-3 text-white">
+                <div
+                  className="text-white"
+                  data-icon="Check"
+                  data-size="20px"
+                  data-weight="regular"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20px"
+                    height="20px"
+                    fill="currentColor"
+                    viewBox="0 0 256 256"
+                  >
+                    <path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z" />
+                  </svg>
+                </div>
+                Everything in Pro, plus:
+              </div>
+              <div className="text-[13px] font-normal leading-normal flex gap-3 text-white">
+                <div
+                  className="text-white"
+                  data-icon="Check"
+                  data-size="20px"
+                  data-weight="regular"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20px"
+                    height="20px"
+                    fill="currentColor"
+                    viewBox="0 0 256 256"
+                  >
+                    <path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z" />
+                  </svg>
+                </div>
+                Unlimited designs
+              </div>
+              <div className="text-[13px] font-normal leading-normal flex gap-3 text-white">
+                <div
+                  className="text-white"
+                  data-icon="Check"
+                  data-size="20px"
+                  data-weight="regular"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20px"
+                    height="20px"
+                    fill="currentColor"
+                    viewBox="0 0 256 256"
+                  >
+                    <path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z" />
+                  </svg>
+                </div>
+                300+ templates
+              </div>
+              <div className="text-[13px] font-normal leading-normal flex gap-3 text-white">
+                <div
+                  className="text-white"
+                  data-icon="Check"
+                  data-size="20px"
+                  data-weight="regular"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20px"
+                    height="20px"
+                    fill="currentColor"
+                    viewBox="0 0 256 256"
+                  >
+                    <path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z" />
+                  </svg>
+                </div>
+                Invite unlimited team members
+              </div>
+              <div className="text-[13px] font-normal leading-normal flex gap-3 text-white">
+                <div
+                  className="text-white"
+                  data-icon="Check"
+                  data-size="20px"
+                  data-weight="regular"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20px"
+                    height="20px"
+                    fill="currentColor"
+                    viewBox="0 0 256 256"
+                  >
+                    <path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z" />
+                  </svg>
+                </div>
+                Commenting
+              </div>
+              <div className="text-[13px] font-normal leading-normal flex gap-3 text-white">
+                <div
+                  className="text-white"
+                  data-icon="Check"
+                  data-size="20px"
+                  data-weight="regular"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20px"
+                    height="20px"
+                    fill="currentColor"
+                    viewBox="0 0 256 256"
+                  >
+                    <path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z" />
+                  </svg>
+                </div>
+                Shareable links
+              </div>
+              <div className="text-[13px] font-normal leading-normal flex gap-3 text-white">
+                <div
+                  className="text-white"
+                  data-icon="Check"
+                  data-size="20px"
+                  data-weight="regular"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20px"
+                    height="20px"
+                    fill="currentColor"
+                    viewBox="0 0 256 256"
+                  >
+                    <path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z" />
+                  </svg>
+                </div>
+                Export to SVG, PDF
+              </div>
+              <div className="text-[13px] font-normal leading-normal flex gap-3 text-white">
+                <div
+                  className="text-white"
+                  data-icon="Check"
+                  data-size="20px"
+                  data-weight="regular"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20px"
+                    height="20px"
+                    fill="currentColor"
+                    viewBox="0 0 256 256"
+                  >
+                    <path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z" />
+                  </svg>
+                </div>
+                Import from Figma, Sketch
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

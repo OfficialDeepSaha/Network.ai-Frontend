@@ -1,0 +1,68 @@
+
+
+/* Context menu */
+.context-menu {
+  position: absolute;
+  z-index: 10;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb; /* Light border */
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  padding: 8px;
+  min-width: 160px;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.context-menu ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.context-menu ul li {
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 0.875rem; /* Small but readable font */
+  color: #374151; /* Dark gray */
+  transition: background-color 0.2s ease-in-out;
+}
+
+.context-menu ul li:hover {
+  background-color: #f3f4f6; /* Light hover effect */
+}
+
+/* Right-click triggered context menu */
+.context-menu ul li:hover {
+  background-color: #e0e7ff; /* Hover effect with light blue */
+  color: #1d4ed8; /* Change to blue on hover */
+}
+
+
+.video-call-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.local-video, .remote-video {
+  width: 45%;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+}

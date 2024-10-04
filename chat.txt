@@ -1,0 +1,225 @@
+<div
+  className="relative flex size-full min-h-screen flex-col bg-[#f8fbfa] group/design-root overflow-x-hidden"
+  style={{ fontFamily: '"Plus Jakarta Sans", "Noto Sans", sans-serif' }}
+>
+  <div className="layout-container flex h-full grow flex-col">
+    <div className="gap-1 px-6 flex flex-1 justify-center py-5">
+      <div className="layout-content-container flex flex-col w-80">
+        <div className="px-4 py-3">
+          <label className="flex flex-col min-w-40 h-12 w-full">
+            <div className="flex w-full flex-1 items-stretch rounded-xl h-full">
+              <div
+                className="text-[#50956c] flex border-none bg-[#e8f3ec] items-center justify-center pl-4 rounded-l-xl border-r-0"
+                data-icon="MagnifyingGlass"
+                data-size="24px"
+                data-weight="regular"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24px"
+                  height="24px"
+                  fill="currentColor"
+                  viewBox="0 0 256 256"
+                >
+                  <path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z" />
+                </svg>
+              </div>
+              <input
+                placeholder="Search"
+                className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#0e1b13] focus:outline-0 focus:ring-0 border-none bg-[#e8f3ec] focus:border-none h-full placeholder:text-[#50956c] px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal"
+                defaultValue=""
+              />
+            </div>
+          </label>
+        </div>
+        <div className="flex items-center gap-4 bg-[#f8fbfa] px-4 min-h-[72px] py-2 justify-between">
+          <div className="flex items-center gap-4">
+            <div
+              className="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-14 w-fit"
+              style={{
+                backgroundImage:
+                  'url("https://cdn.usegalileo.ai/stability/91f10326-b3bc-413f-8cd2-24db614eecd4.png")'
+              }}
+            />
+            <div className="flex flex-col justify-center">
+              <p className="text-[#0e1b13] text-base font-medium leading-normal line-clamp-1">
+                Ethan
+              </p>
+              <p className="text-[#50956c] text-sm font-normal leading-normal line-clamp-2">
+                Hey, how's it going?
+              </p>
+            </div>
+          </div>
+          <div className="shrink-0">
+            <p className="text-[#50956c] text-sm font-normal leading-normal">
+              now
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-4 bg-[#f8fbfa] px-4 min-h-[72px] py-2 justify-between">
+          <div className="flex items-center gap-4">
+            <div
+              className="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-14 w-fit"
+              style={{
+                backgroundImage:
+                  'url("https://cdn.usegalileo.ai/sdxl10/a4934d7a-7a0b-414b-948f-16ebd4f70f29.png")'
+              }}
+            />
+            <div className="flex flex-col justify-center">
+              <p className="text-[#0e1b13] text-base font-medium leading-normal line-clamp-1">
+                Isabella
+              </p>
+              <p className="text-[#50956c] text-sm font-normal leading-normal line-clamp-2">
+                What's up?
+              </p>
+            </div>
+          </div>
+          <div className="shrink-0">
+            <p className="text-[#50956c] text-sm font-normal leading-normal">
+              5m
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-4 bg-[#f8fbfa] px-4 min-h-[72px] py-2 justify-between">
+          <div className="flex items-center gap-4">
+            <div
+              className="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-14 w-fit"
+              style={{
+                backgroundImage:
+                  'url("https://cdn.usegalileo.ai/stability/94cb5481-e16f-4c31-8eda-42e9b0c88deb.png")'
+              }}
+            />
+            <div className="flex flex-col justify-center">
+              <p className="text-[#0e1b13] text-base font-medium leading-normal line-clamp-1">
+                David
+              </p>
+              <p className="text-[#50956c] text-sm font-normal leading-normal line-clamp-2">
+                Hey, do you want to grab lunch?
+              </p>
+            </div>
+          </div>
+          <div className="shrink-0">
+            <p className="text-[#50956c] text-sm font-normal leading-normal">
+              10m
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-4 bg-[#f8fbfa] px-4 min-h-[72px] py-2 justify-between">
+          <div className="flex items-center gap-4">
+            <div
+              className="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-14 w-fit"
+              style={{
+                backgroundImage:
+                  'url("https://cdn.usegalileo.ai/stability/6b18acdc-b2ca-4ecb-990d-26da28a28288.png")'
+              }}
+            />
+            <div className="flex flex-col justify-center">
+              <p className="text-[#0e1b13] text-base font-medium leading-normal line-clamp-1">
+                Sophia
+              </p>
+              <p className="text-[#50956c] text-sm font-normal leading-normal line-clamp-2">
+                I'm good, thanks for asking!
+              </p>
+            </div>
+          </div>
+          <div className="shrink-0">
+            <p className="text-[#50956c] text-sm font-normal leading-normal">
+              15m
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
+        <div className="flex flex-wrap justify-between gap-3 p-4">
+          <div className="flex min-w-72 flex-col gap-3">
+            <p className="text-[#0e1b13] tracking-light text-[32px] font-bold leading-tight">
+              Ethan
+            </p>
+            <p className="text-[#50956c] text-sm font-normal leading-normal">
+              Last seen 5 minutes ago
+            </p>
+          </div>
+        </div>
+        <div className="flex items-end gap-3 p-4">
+          <div
+            className="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0"
+            style={{
+              backgroundImage:
+                'url("https://cdn.usegalileo.ai/stability/0a705d40-e8d8-44c2-b2e6-154d91ce883d.png")'
+            }}
+          />
+          <div className="flex flex-1 flex-col gap-1 items-start">
+            <p className="text-[#50956c] text-[13px] font-normal leading-normal max-w-[360px]">
+              Ethan
+            </p>
+            <p className="text-base font-normal leading-normal flex max-w-[360px] rounded-xl px-4 py-3 bg-[#e8f3ec] text-[#0e1b13]">
+              Hey, how's it going?
+            </p>
+          </div>
+        </div>
+        <div className="flex items-end gap-3 p-4 justify-end">
+          <div className="flex flex-1 flex-col gap-1 items-end">
+            <p className="text-[#50956c] text-[13px] font-normal leading-normal max-w-[360px] text-right">
+              Me
+            </p>
+            <p className="text-base font-normal leading-normal flex max-w-[360px] rounded-xl px-4 py-3 bg-[#1abc5b] text-[#0e1b13]">
+              I'm good, thanks for asking!
+            </p>
+          </div>
+          <div
+            className="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0"
+            style={{
+              backgroundImage:
+                'url("https://cdn.usegalileo.ai/stability/ad7f8054-ccef-4988-9e38-e1ce394c4192.png")'
+            }}
+          />
+        </div>
+        <div className="flex items-center px-4 py-3 gap-3 @container">
+          <div
+            className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 shrink-0"
+            style={{
+              backgroundImage:
+                'url("https://cdn.usegalileo.ai/stability/0ff39aa8-3a69-4d8f-9dbc-da0f46769701.png")'
+            }}
+          />
+          <label className="flex flex-col min-w-40 h-12 flex-1">
+            <div className="flex w-full flex-1 items-stretch rounded-xl h-full">
+              <input
+                placeholder="Type a message"
+                className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#0e1b13] focus:outline-0 focus:ring-0 border-none bg-[#e8f3ec] focus:border-none h-full placeholder:text-[#50956c] px-4 rounded-r-none border-r-0 pr-2 text-base font-normal leading-normal"
+                defaultValue=""
+              />
+              <div className="flex border-none bg-[#e8f3ec] items-center justify-center pr-4 rounded-r-xl border-l-0 !pr-2">
+                <div className="flex items-center gap-4 justify-end">
+                  <div className="flex items-center gap-1">
+                    <button className="flex items-center justify-center p-1.5">
+                      <div
+                        className="text-[#50956c]"
+                        data-icon="Paperclip"
+                        data-size="20px"
+                        data-weight="regular"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20px"
+                          height="20px"
+                          fill="currentColor"
+                          viewBox="0 0 256 256"
+                        >
+                          <path d="M209.66,122.34a8,8,0,0,1,0,11.32l-82.05,82a56,56,0,0,1-79.2-79.21L147.67,35.73a40,40,0,1,1,56.61,56.55L105,193A24,24,0,1,1,71,159L154.3,74.38A8,8,0,1,1,165.7,85.6L82.39,170.31a8,8,0,1,0,11.27,11.36L192.93,81A24,24,0,1,0,159,47L59.76,147.68a40,40,0,1,0,56.53,56.62l82.06-82A8,8,0,0,1,209.66,122.34Z" />
+                        </svg>
+                      </div>
+                    </button>
+                  </div>
+                  <button className="min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-8 px-4 bg-[#1abc5b] text-[#0e1b13] text-sm font-medium leading-normal hidden @[480px]:block">
+                    <span className="truncate">Send</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
