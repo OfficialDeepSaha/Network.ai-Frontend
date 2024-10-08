@@ -91,7 +91,7 @@ const LandingPage = () => {
             </motion.div>
           </div>
           <nav className="hidden md:flex space-x-6">
-            <a href="#" className="text-gray-700 hover:text-blue-600 transition duration-300" onClick={()=> navigate('/home')}>Home</a>
+            <a href="#" className="text-gray-700 hover:text-blue-600 transition duration-300" onClick={()=> navigate('/register')}>Register</a>
             <a href="#" className="text-gray-700 hover:text-blue-600 transition duration-300">Features</a>
             <a href="#" className="text-gray-700 hover:text-blue-600 transition duration-300">Testimonials</a>
             <a href="#" className="text-gray-700 hover:text-blue-600 transition duration-300">Contact</a>

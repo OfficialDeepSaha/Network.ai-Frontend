@@ -4,6 +4,7 @@ import Test2  from './Test2.jsx'
 import LandingPage from './LandingPage.jsx'
 import Test1 from './Test1.jsx'
 import Dashboard from './Dashboard.jsx'
+import GitHubCallback from './GitHubCallback.jsx'
 
 
 const Active = () => {
@@ -17,6 +18,7 @@ const Active = () => {
         <Route path='/register' element={<Test2/>} />
         <Route exact path='/' element={<LandingPage/>}  />
         <Route path='/home' element={<Dashboard/>} />
+        <Route path="/auth/github/callback" element={<GitHubCallback />} />
         <Route path='/test' element={<Test1/>} />
     </Routes>
 </Router>

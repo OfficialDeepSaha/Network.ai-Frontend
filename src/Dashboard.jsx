@@ -25,6 +25,11 @@ import {
   FaTwitter,
   FaLinkedin,
   FaAddressBook,
+  FaWaveSquare,
+  FaRobot,
+  FaMicrophone,
+  FaStop,
+  FaBrain,
 } from "react-icons/fa";
 import Modal from "react-modal"; // For confirmation dialog
 import { motion, AnimatePresence } from "framer-motion";
@@ -34,13 +39,28 @@ import { ClipLoader } from "react-spinners";
 import { FaGithub, FaUserCircle } from "react-icons/fa";
 import Confetti from "react-confetti";
 import useWindowSize from "react-use/lib/useWindowSize";
-import './Dashboard.css'
+import "./Dashboard.css";
 import { AiFillAccountBook } from "react-icons/ai";
-
+import Recommendations from "./Recommendations";
+import ConnectionRequests from "./ConnectionRequests";
+import { GroupRequests } from "./GroupRequests";
+import {
+  ReactMediaRecorder,
+  useReactMediaRecorder,
+} from "react-media-recorder";
+import {
+  Box,
+  CircularProgress,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+} from "@mui/material";
+import LoadingProfileMatching from "./LoadingProfileMatching";
 
 // WebRTC-related
 const iceServers = {
-  iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
+  iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
 };
 let localConnection, remoteConnection;
 
@@ -52,7 +72,8 @@ const Dashboard = () => {
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [userId, setUserId] = useState(localStorage.getItem("userId"));
   const [recommendations, setRecommendations] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [matchingProgress, setMatchingProgress] = useState(0);
   const [activeTab, setActiveTab] = useState("recommendations");
   const [approvalRequests, setApprovalRequests] = useState([]);
   const [groupRequests, setGroupRequests] = useState([]);
@@ -64,6 +85,9 @@ const Dashboard = () => {
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
   const [chats, setChats] = useState([]); // List of available chats
+  const [isRecording, setIsRecording] = useState(false);
+  const [audioLevel, setAudioLevel] = useState(0);
+  const [recordingDuration, setRecordingDuration] = useState(0);
   const [groups, setGroups] = useState([]);
   const [activeChat, setActiveChat] = useState(null); // Currently selected chat
   const [messages, setMessages] = useState([]); // Messages in active chat
@@ -72,6 +96,7 @@ const Dashboard = () => {
   const [chatId, setChatId] = useState(null);
   const [documentFile, setDocumentFile] = useState(null);
   const [user, setUser] = useState([]);
+  const [recommend, setRecommend] = useState([]);
   const [isPaymentSuccessful, setIsPaymentSuccessful] = useState(false);
   const [contextMenu, setContextMenu] = useState({
     isVisible: false,
@@ -80,6 +105,7 @@ const Dashboard = () => {
   });
   const [rightClickedMessage, setRightClickedMessage] = useState(null); // Store the right-clicked message
   const [isLoadingAIResponse, setIsLoadingAIResponse] = useState(false);
+
   const [isEditable, setIsEditable] = useState({
     bio: false,
     email: false,
@@ -93,21 +119,25 @@ const Dashboard = () => {
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
 
-
   const initiateVideoCall = async () => {
     closeModal(); // Close modal after confirmation
     setIsInCall(true); // Update call state
 
     // Get user media for the video call
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: true,
+    });
     localVideoRef.current.srcObject = stream;
 
     // Initialize WebRTC connections
     localConnection = new RTCPeerConnection(iceServers);
-    stream.getTracks().forEach(track => localConnection.addTrack(track, stream));
+    stream
+      .getTracks()
+      .forEach((track) => localConnection.addTrack(track, stream));
 
     // Handle ICE candidate
-    localConnection.onicecandidate = event => {
+    localConnection.onicecandidate = (event) => {
       if (event.candidate) {
         // Send the candidate to the remote peer via your signaling server (WebSocket)
         sendSignal("ice-candidate", event.candidate);
@@ -115,7 +145,7 @@ const Dashboard = () => {
     };
 
     // When remote stream is received
-    localConnection.ontrack = event => {
+    localConnection.ontrack = (event) => {
       remoteVideoRef.current.srcObject = event.streams[0];
     };
 
@@ -132,14 +162,21 @@ const Dashboard = () => {
     if (type === "offer") {
       // Handle offer from the remote peer
       remoteConnection = new RTCPeerConnection(iceServers);
-      remoteConnection.ontrack = event => {
+      remoteConnection.ontrack = (event) => {
         remoteVideoRef.current.srcObject = event.streams[0];
       };
 
-      await remoteConnection.setRemoteDescription(new RTCSessionDescription(data));
+      await remoteConnection.setRemoteDescription(
+        new RTCSessionDescription(data)
+      );
 
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-      stream.getTracks().forEach(track => remoteConnection.addTrack(track, stream));
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
+      stream
+        .getTracks()
+        .forEach((track) => remoteConnection.addTrack(track, stream));
 
       const answer = await remoteConnection.createAnswer();
       await remoteConnection.setLocalDescription(answer);
@@ -147,7 +184,9 @@ const Dashboard = () => {
       sendSignal("answer", answer);
     } else if (type === "answer") {
       // Handle answer from remote peer
-      await localConnection.setRemoteDescription(new RTCSessionDescription(data));
+      await localConnection.setRemoteDescription(
+        new RTCSessionDescription(data)
+      );
     } else if (type === "ice-candidate") {
       // Handle ICE candidate
       const candidate = new RTCIceCandidate(data);
@@ -158,8 +197,6 @@ const Dashboard = () => {
       }
     }
   };
-
-
 
   useEffect(() => {
     const fetchNotifications = () => {
@@ -232,12 +269,12 @@ const Dashboard = () => {
     experience: "",
     goal: "",
     twitter_handle: "",
-    bio:"",
-    about:"",
+    bio: "",
+    about: "",
     github: "",
-    linkedin:"",
-    banner_image:"",
-    profile_image:""
+    linkedin: "",
+    banner_image: "",
+    profile_image: "",
   });
 
   useEffect(() => {
@@ -463,21 +500,19 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-    
       if (token) {
         await fetchUserDetails();
       }
       if (userId) {
         await Promise.all([
           handleGetRecommendations(),
-          handleAutoGenerateConnections(),
+          // handleAutoGenerateConnections(),
           handleGetApprovalRequests(),
           handleGroupApprovalRequests(),
           getMyNetworks(),
           getOtherNetworks(),
         ]);
       }
-      
     };
 
     fetchData();
@@ -687,8 +722,6 @@ const Dashboard = () => {
     }
   };
 
-
-
   const CheckIcon = () => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -800,9 +833,7 @@ const Dashboard = () => {
         github: userData.github,
         linkedin: userData.linkedin,
         banner_image: userData.banner_image,
-        profile_image: userData.profile_image
-
-
+        profile_image: userData.profile_image,
       });
 
       const formData = new FormData();
@@ -917,6 +948,76 @@ const Dashboard = () => {
     },
   ];
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setMatchingProgress((prev) => (prev < 100 ? prev + 1 : 0));
+    }, 50);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleStop = async (blobUrl, blob) => {
+    console.log("Blob URL received:", blobUrl);
+    console.log("Blob object:", blob);
+
+    if (!blob || !(blob instanceof Blob)) {
+      console.error("Invalid blob object received");
+      return;
+    }
+
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("audio", blob, "recording.mp3");
+
+    try {
+      const response = await axios.post(
+        `http://localhost:8000/upload_audio/?user_id=${userId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      setRecommend(response.data.recommendations);
+      console.log(response.data.recommendations);
+    } catch (error) {
+      console.error("Error uploading audio:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const { startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder(
+    {
+      audio: true,
+      onStop: handleStop,
+    }
+  );
+
+  // Start recording logic
+  const handleStartRecording = () => {
+    setIsRecording(true);
+    startRecording();
+  };
+
+  // Stop recording logic
+  const handleStopRecording = () => {
+    setIsRecording(false);
+    stopRecording();
+  };
+
+  useEffect(() => {
+    let interval;
+    if (isRecording) {
+      interval = setInterval(() => {
+        setAudioLevel(Math.random());
+        setRecordingDuration((prev) => prev + 1);
+      }, 100);
+    }
+    return () => clearInterval(interval);
+  }, [isRecording]);
+
   return (
     <div className="flex h-screen bg-gray-100">
       <motion.aside
@@ -942,7 +1043,8 @@ const Dashboard = () => {
           </motion.button>
           <nav className="space-y-4">
             {[
-              { icon: FaNetworkWired, text: "Connections", active: true },
+              { icon: FaHome, text: "Home", active: true },
+              { icon: FaNetworkWired, text: "Connections" },
               { icon: FaUserFriends, text: "My Networks" },
               { icon: FaGlobe, text: "Other Networks" },
               { icon: FaThumbsUp, text: "Recommendations", highlight: "green" },
@@ -1067,135 +1169,84 @@ const Dashboard = () => {
           </div>
         </header>
 
-        {activeTab === "recommendations" && (
-          <main className="flex-1 overflow-y-auto bg-gray-50 p-8">
-          <div className="max-w-7xl mx-auto">
-            <motion.h2
-              className="text-3xl font-bold mb-6 relative inline-block"
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
-                Suggested Connections
-              </span>
-              <motion.span
-                className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-purple-600"
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-              />
-            </motion.h2>
-            <motion.nav
-              className="flex space-x-4 mb-8"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              {["All", "Tech", "Health", "Climate"].map((category, index) => (
-                <motion.button
-                  key={category}
-                  onClick={() => setActiveCategory(category)}
-                  className={`px-4 py-2 text-sm font-medium rounded-full transition-colors duration-200 ${activeCategory === category ? "text-white bg-gradient-to-r from-blue-500 to-purple-500 shadow-md" : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"}`}
-                  whileHover={{ scale: 1.05, boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)" }}
-                  whileTap={{ scale: 0.95 }}
+        {activeTab === "home" && (
+          <>
+            <main className="flex-1 overflow-y-auto bg-gray-50 p-8">
+              {/* AI Integration */}
+              <section className="p-6 bg-white rounded-2xl shadow-xl m-4 overflow-hidden relative flex flex-col items-center">
+                <motion.div
+                  className="flex items-center justify-center mb-4 space-x-4"
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
                 >
-                  {category}
-                </motion.button>
-              ))}
-            </motion.nav>
-            <motion.div
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-              variants={fadeInUp}
-              initial="initial"
-              animate="animate"
-            >
-              <AnimatePresence>
-                {recommendations && recommendations.map((recomm) => (
-                  <motion.div
-                    key={recomm.id}
-                    className="bg-white shadow-lg rounded-2xl overflow-hidden transform transition-all duration-300"
-                    whileHover={{ y: -5, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)" }}
-                    layout
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <div className="relative h-40">
-                      <img
-                        className="w-full h-full object-cover"
-                        src={recomm.banner_image}
-                        
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60"></div>
-                    </div>
-                    <div className="p-4 relative">
-                      <motion.div
-                        className="absolute -top-10 left-4 bg-white rounded-full p-1 shadow-md"
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{ delay: 0.1, type: "spring", stiffness: 500, damping: 30 }}
-                      >
-                        <img
-                          className="w-16 h-16 rounded-full object-cover border-2 border-white"
-                          src={recomm.profile_image}
-                          
-                        />
-                      </motion.div>
-                      <h3 className="text-lg font-bold mb-2 mt-10">{recomm.name}</h3>
-                      <p className="text-blue-600 text-sm font-medium mb-2">{recomm.bio}</p>
-                      <p className="text-gray-600 text-sm mb-4 line-clamp-2">{recomm.about}</p>
-                      <div className="flex justify-between items-center">
-                        <div className="flex space-x-2">
-                          <motion.a href={recomm.linkedin} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-                            <FaLinkedin className="text-blue-600 hover:text-blue-700" size={18} />
-                          </motion.a>
-                          <motion.a href={'https://github.com/'+recomm.github} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-                            <FaGithub className="text-gray-700 hover:text-gray-800" size={18} />
-                          </motion.a>
-                          <motion.a href={'https://x.com/'+recomm.twitter_handle} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-                            <FaTwitter className="text-blue-400 hover:text-blue-500" size={18} />
-                          </motion.a>
-                        </div>
-                        <motion.button
-                          className="text-blue-500 hover:text-blue-600 transition-colors duration-200"
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.9 }}
-                        >
-                          <FaCommentAlt size={18} />
-                        </motion.button>
-                      </div>
-                      <motion.button
-                        className="w-full mt-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-full text-sm font-medium hover:from-blue-600 hover:to-purple-600 transition-colors duration-200 flex items-center justify-center"
-                        whileHover={{ scale: 1.03 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={() =>
-                          handleSendConnectionRequest(recomm.id)
-                        }
-                      >
-                        <FaUserFriends className="mr-2" size={14} />
-                        Connect
-                      </motion.button>
-                    </div>
+                  <motion.div className="text-4xl  text-purple-600 justify-between">
+                    <FaRobot />
                   </motion.div>
-                ))}
-              </AnimatePresence>
-            </motion.div>
-          </div>
-        </main>
-        )}
+                  <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mr-4">
+                    AI-Powered Profile Matching
+                  </h2>
+                </motion.div>
+                <div className="flex items-center space-x-4">
+                  <motion.button
+                    onClick={handleStartRecording}
+                    className={`px-6 py-3 rounded-xl ${
+                      isRecording
+                        ? "bg-gray-300 cursor-not-allowed"
+                        : "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+                    } text-white text-base font-semibold transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center`}
+                    disabled={isRecording}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <FaMicrophone className="mr-2 text-lg" />
+                    <span>Start Recording</span>
+                  </motion.button>
 
-        {activeTab === "my networks" && (
-          <main className="flex-1 overflow-y-auto bg-gray-50 p-4">
+                  <motion.button
+                    onClick={handleStopRecording}
+                    className={`px-6 py-3 rounded-xl ${
+                      !isRecording
+                        ? "bg-gray-300 cursor-not-allowed"
+                        : "bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700"
+                    } text-white text-base font-semibold transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center`}
+                    disabled={!isRecording}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <FaStop className="mr-2 text-lg" />
+                    <span>Stop Recording</span>
+                  </motion.button>
+                </div>
+
+
+
+                
+   {loading && <LoadingProfileMatching matchingProgress={matchingProgress} />}
+
+   {recommend && recommend.length> 0  ? (
+   
+   
+   
+   
+   
+   <main className="flex-1 overflow-y-auto bg-gray-50 p-8">
             <div className="max-w-7xl mx-auto">
               <motion.h2
-                className="text-3xl font-bold text-gray-900 mb-6"
+                className="text-3xl font-bold mb-6 relative inline-block"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                My Networks
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+                  Suggested Connections
+                </span>
+                <motion.span
+                  className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-purple-600"
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                />
               </motion.h2>
               <motion.nav
                 className="flex space-x-4 mb-8"
@@ -1207,12 +1258,301 @@ const Dashboard = () => {
                   <motion.button
                     key={category}
                     onClick={() => setActiveCategory(category)}
-                    className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
+                    className={`px-4 py-2 text-sm font-medium rounded-full transition-colors duration-200 ${
                       activeCategory === category
-                        ? "text-white bg-blue-600"
+                        ? "text-white bg-gradient-to-r from-blue-500 to-purple-500 shadow-md"
                         : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
                     }`}
-                    whileHover={{ scale: 1.05 }}
+                    whileHover={{
+                      scale: 1.05,
+                      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                    }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {category}
+                  </motion.button>
+                ))}
+              </motion.nav>
+              <motion.div 
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" 
+            variants={{ initial: { opacity: 0 }, animate: { opacity: 1 } }} 
+            initial="initial" 
+            animate="animate" 
+          > 
+            <AnimatePresence> 
+              {recommend.map((recomm) => ( 
+                <motion.div 
+                  key={recomm.id} 
+                  className="bg-white shadow-lg rounded-2xl overflow-hidden transform transition-all duration-300" 
+                  whileHover={{ y: -5, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)" }} 
+                  layout 
+                  initial={{ opacity: 0, scale: 0.9 }} 
+                  animate={{ opacity: 1, scale: 1 }} 
+                  exit={{ opacity: 0, scale: 0.9 }} 
+                  transition={{ duration: 0.3 }} 
+                > 
+                  <div className="relative h-40"> 
+                    <img className="w-full h-full object-cover" src={recomm.banner_image} alt="Banner" /> 
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60"></div> 
+                  </div> 
+                  <div className="p-4 relative"> 
+                    <motion.div 
+                      className="absolute -top-10 left-4 bg-white rounded-full p-1 shadow-md" 
+                      initial={{ scale: 0 }} 
+                      animate={{ scale: 1 }} 
+                      transition={{ delay: 0.1, type: "spring", stiffness: 500, damping: 30 }} 
+                    > 
+                      <img className="w-16 h-16 rounded-full object-cover border-2 border-white" src={recomm.profile_image} alt="Profile" /> 
+                    </motion.div> 
+                    <h3 className="text-lg font-bold mb-2 mt-10">{recomm.name}</h3> 
+                    <p className="text-blue-600 text-sm font-medium mb-2">{recomm.bio}</p> 
+                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">{recomm.about}</p> 
+                    <div className="flex justify-between items-center"> 
+                      <div className="flex space-x-2"> 
+                        <motion.a href={recomm.linkedin} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}> 
+                          <FaLinkedin className="text-blue-600 hover:text-blue-700" size={18} /> 
+                        </motion.a> 
+                        <motion.a href={'https://github.com/' + recomm.github} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}> 
+                          <FaGithub className="text-gray-700 hover:text-gray-800" size={18} /> 
+                        </motion.a> 
+                        <motion.a href={'https://x.com/' + recomm.twitter_handle} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}> 
+                          <FaTwitter className="text-blue-400 hover:text-blue-500" size={18} /> 
+                        </motion.a> 
+                      </div> 
+                      <motion.button 
+                        className="text-blue-500 hover:text-blue-600 transition-colors duration-200" 
+                        whileHover={{ scale: 1.1 }} 
+                        whileTap={{ scale: 0.9 }} 
+                      > 
+                        <FaCommentAlt size={18} /> 
+                      </motion.button> 
+                    </div> 
+                    <motion.button 
+                      className="w-full mt-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-full text-sm font-medium hover:from-blue-600 hover:to-purple-600 transition-colors duration-200 flex items-center justify-center" 
+                      whileHover={{ scale: 1.03 }} 
+                      whileTap={{ scale: 0.98 }} 
+                      onClick={() => handleSendConnectionRequest(recomm.id)} 
+                    > 
+                      <FaUserFriends className="mr-2" size={14} /> 
+                      Connect 
+                    </motion.button> 
+                  </div> 
+                </motion.div> 
+              ))} 
+            </AnimatePresence> 
+          </motion.div> 
+            
+            </div>
+          </main>
+   
+            ) : ""
+   
+   
+   
+   
+   
+   
+   }
+
+                <AnimatePresence>
+                  {isRecording && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 0.5 }}
+                      className="mt-6 p-4 bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl overflow-hidden shadow-inner w-full max-w-2xl"
+                    >
+                      <div className="flex items-center space-x-4">
+                        <motion.div
+                          className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg"
+                          animate={{ scale: [1, 1.2, 1] }}
+                          transition={{ duration: 1.5, repeat: Infinity }}
+                        >
+                          <FaMicrophone className="text-white text-xl" />
+                        </motion.div>
+                        <div className="flex-1">
+                          <div className="h-3 bg-gray-200 rounded-full overflow-hidden shadow-inner">
+                            <motion.div
+                              className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
+                              style={{ width: `${audioLevel * 100}%` }}
+                              animate={{
+                                width: `${audioLevel * 100}%`,
+                                transition: { duration: 0.1, ease: "linear" },
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <motion.p
+                        className="mt-4 text-base text-gray-700 font-medium"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.5, duration: 0.5 }}
+                      >
+                        AI is analyzing your profile information...
+                      </motion.p>
+                      <motion.div
+                        className="mt-3 flex justify-center"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 1, duration: 0.5 }}
+                      >
+                        <div className="flex space-x-2">
+                          {[...Array(3)].map((_, i) => (
+                            <motion.div
+                              key={i}
+                              className="w-2 h-2 bg-blue-600 rounded-full"
+                              animate={{ y: [0, -6, 0] }}
+                              transition={{
+                                duration: 0.5,
+                                repeat: Infinity,
+                                delay: i * 0.1,
+                              }}
+                            />
+                          ))}
+                        </div>
+                      </motion.div>
+                      <motion.div
+                        className="mt-4 flex justify-between items-center"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 1.5, duration: 0.5 }}
+                      >
+                        <div className="flex items-center space-x-3">
+                          <FaBrain className="text-2xl text-purple-600" />
+                          <div>
+                            <p className="text-xs text-gray-500">
+                              AI Processing
+                            </p>
+                            <p className="text-sm font-semibold text-purple-600">
+                              {Math.floor(recordingDuration / 60)}:
+                              {recordingDuration % 60 < 10 ? "0" : ""}
+                              {recordingDuration % 60}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-3">
+                          <FaWaveSquare className="text-2xl text-blue-600" />
+                          <div>
+                            <p className="text-xs text-gray-500">
+                              Audio Quality
+                            </p>
+                            <p className="text-sm font-semibold text-blue-600">
+                              {Math.floor(audioLevel * 100)}%
+                            </p>
+                          </div>
+                        </div>
+                      </motion.div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+                <div className="absolute -bottom-8 -right-8 w-48 h-48 bg-gradient-to-br from-blue-200 to-purple-200 rounded-full opacity-50 blur-3xl"></div>
+              </section>
+            </main>
+          </>
+
+                
+
+
+
+
+
+
+
+        )}
+
+        {activeTab === "recommendations" && (
+          <main className="flex-1 overflow-y-auto bg-gray-50 p-8">
+            <div className="max-w-7xl mx-auto">
+              <motion.h2
+                className="text-3xl font-bold mb-6 relative inline-block"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+                  Suggested Connections
+                </span>
+                <motion.span
+                  className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-purple-600"
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                />
+              </motion.h2>
+              <motion.nav
+                className="flex space-x-4 mb-8"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                {["All", "Tech", "Health", "Climate"].map((category) => (
+                  <motion.button
+                    key={category}
+                    onClick={() => setActiveCategory(category)}
+                    className={`px-4 py-2 text-sm font-medium rounded-full transition-colors duration-200 ${
+                      activeCategory === category
+                        ? "text-white bg-gradient-to-r from-blue-500 to-purple-500 shadow-md"
+                        : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                    }`}
+                    whileHover={{
+                      scale: 1.05,
+                      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                    }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {category}
+                  </motion.button>
+                ))}
+              </motion.nav>
+              {/* Recommendations component */}
+              <Recommendations
+                userId={userId}
+                handleSendConnectionRequest={handleSendConnectionRequest}
+              />
+            </div>
+          </main>
+        )}
+
+        {activeTab === "my networks" && (
+          <main className="flex-1 overflow-y-auto bg-gray-50 p-4">
+            <div className="max-w-7xl mx-auto">
+              <motion.h2
+                className="text-3xl font-bold mb-6 relative inline-block"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+                  My Networks
+                </span>
+                <motion.span
+                  className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-purple-600"
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                />
+              </motion.h2>
+              <motion.nav
+                className="flex space-x-4 mb-8"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                {["All", "Tech", "Health", "Climate"].map((category) => (
+                  <motion.button
+                    key={category}
+                    onClick={() => setActiveCategory(category)}
+                    className={`px-4 py-2 text-sm font-medium rounded-full transition-colors duration-200 ${
+                      activeCategory === category
+                        ? "text-white bg-gradient-to-r from-blue-500 to-purple-500 shadow-md"
+                        : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                    }`}
+                    whileHover={{
+                      scale: 1.05,
+                      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                    }}
                     whileTap={{ scale: 0.95 }}
                   >
                     {category}
@@ -1263,12 +1603,20 @@ const Dashboard = () => {
           <main className="flex-1 overflow-y-auto bg-gray-50 p-4">
             <div className="max-w-7xl mx-auto">
               <motion.h2
-                className="text-3xl font-bold text-gray-900 mb-6"
+                className="text-3xl font-bold mb-6 relative inline-block"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                Other Networks
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+                  Other Networks
+                </span>
+                <motion.span
+                  className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-purple-600"
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                />
               </motion.h2>
               <motion.nav
                 className="flex space-x-4 mb-8"
@@ -1280,12 +1628,15 @@ const Dashboard = () => {
                   <motion.button
                     key={category}
                     onClick={() => setActiveCategory(category)}
-                    className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
+                    className={`px-4 py-2 text-sm font-medium rounded-full transition-colors duration-200 ${
                       activeCategory === category
-                        ? "text-white bg-blue-600"
+                        ? "text-white bg-gradient-to-r from-blue-500 to-purple-500 shadow-md"
                         : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
                     }`}
-                    whileHover={{ scale: 1.05 }}
+                    whileHover={{
+                      scale: 1.05,
+                      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                    }}
                     whileTap={{ scale: 0.95 }}
                   >
                     {category}
@@ -1348,12 +1699,20 @@ const Dashboard = () => {
           <main className="flex-1 overflow-y-auto bg-gray-50 p-4">
             <div className="max-w-7xl mx-auto">
               <motion.h2
-                className="text-3xl font-bold text-gray-900 mb-6"
+                className="text-3xl font-bold mb-6 relative inline-block"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                Connection Requests
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+                  Connection Requests
+                </span>
+                <motion.span
+                  className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-purple-600"
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                />
               </motion.h2>
               <motion.nav
                 className="flex space-x-4 mb-8"
@@ -1365,73 +1724,22 @@ const Dashboard = () => {
                   <motion.button
                     key={category}
                     onClick={() => setActiveCategory(category)}
-                    className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
+                    className={`px-4 py-2 text-sm font-medium rounded-full transition-colors duration-200 ${
                       activeCategory === category
-                        ? "text-white bg-blue-600"
+                        ? "text-white bg-gradient-to-r from-blue-500 to-purple-500 shadow-md"
                         : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
                     }`}
-                    whileHover={{ scale: 1.05 }}
+                    whileHover={{
+                      scale: 1.05,
+                      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                    }}
                     whileTap={{ scale: 0.95 }}
                   >
                     {category}
                   </motion.button>
                 ))}
               </motion.nav>
-              <motion.div
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                variants={fadeInUp}
-                initial="initial"
-                animate="animate"
-              >
-                <AnimatePresence>
-                  {approvalRequests &&
-                    approvalRequests.map((approv) => (
-                      <motion.div
-                        key={approv.id}
-                        className="bg-white shadow-lg rounded-lg overflow-hidden"
-                        whileHover={{
-                          y: -5,
-                          boxShadow: "0 10px 20px rgba(0,0,0,0.1)",
-                        }}
-                        transition={{ duration: 0.3 }}
-                        layout
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                      >
-                        <img
-                          className="w-full h-48 object-cover"
-                          src={`https://cdn.usegalileo.ai/stability/cde723c1-99a4-4c51-b7ae-fd2f071d6cfa.png`}
-                        />
-                        <div className="p-6">
-                          <h3 className="text-xl font-semibold mb-2">
-                            {approv.sender_name}
-                          </h3>
-                          <motion.button
-                            className="bg-green-500 text-white px-4 py-2 justify-between rounded-md hover:bg-green-600 transition-colors duration-200"
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() =>
-                              handleApprovalAction(approv.id, true)
-                            }
-                          >
-                            Approve
-                          </motion.button>
-                          <motion.button
-                            className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors duration-200"
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() =>
-                              handleApprovalAction(approv.id, false)
-                            }
-                          >
-                            Deny
-                          </motion.button>
-                        </div>
-                      </motion.div>
-                    ))}
-                </AnimatePresence>
-              </motion.div>
+              <ConnectionRequests userId={userId} token={token} />
             </div>
           </main>
         )}
@@ -1440,12 +1748,20 @@ const Dashboard = () => {
           <main className="flex-1 overflow-y-auto bg-gray-50 p-4">
             <div className="max-w-7xl mx-auto">
               <motion.h2
-                className="text-3xl font-bold text-gray-900 mb-6"
+                className="text-3xl font-bold mb-6 relative inline-block"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                Group Requests
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+                  Group Requests
+                </span>
+                <motion.span
+                  className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-purple-600"
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                />
               </motion.h2>
               <motion.nav
                 className="flex space-x-4 mb-8"
@@ -1457,73 +1773,22 @@ const Dashboard = () => {
                   <motion.button
                     key={category}
                     onClick={() => setActiveCategory(category)}
-                    className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
+                    className={`px-4 py-2 text-sm font-medium rounded-full transition-colors duration-200 ${
                       activeCategory === category
-                        ? "text-white bg-blue-600"
+                        ? "text-white bg-gradient-to-r from-blue-500 to-purple-500 shadow-md"
                         : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
                     }`}
-                    whileHover={{ scale: 1.05 }}
+                    whileHover={{
+                      scale: 1.05,
+                      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                    }}
                     whileTap={{ scale: 0.95 }}
                   >
                     {category}
                   </motion.button>
                 ))}
               </motion.nav>
-              <motion.div
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                variants={fadeInUp}
-                initial="initial"
-                animate="animate"
-              >
-                <AnimatePresence>
-                  {groupRequests &&
-                    groupRequests.map((approv) => (
-                      <motion.div
-                        key={approv.id}
-                        className="bg-white shadow-lg rounded-lg overflow-hidden"
-                        whileHover={{
-                          y: -5,
-                          boxShadow: "0 10px 20px rgba(0,0,0,0.1)",
-                        }}
-                        transition={{ duration: 0.3 }}
-                        layout
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                      >
-                        <img
-                          className="w-full h-48 object-cover"
-                          src={`https://cdn.usegalileo.ai/stability/cde723c1-99a4-4c51-b7ae-fd2f071d6cfa.png`}
-                        />
-                        <div className="p-6">
-                          <h3 className="text-xl font-semibold mb-2">
-                            {approv.sender_name}
-                          </h3>
-                          <motion.button
-                            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors duration-200"
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() =>
-                              handleGroupApprovalAction(approv.id, true)
-                            }
-                          >
-                            Yes
-                          </motion.button>
-                          <motion.button
-                            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors duration-200"
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() =>
-                              handleGroupApprovalAction(approv.id, false)
-                            }
-                          >
-                            No
-                          </motion.button>
-                        </div>
-                      </motion.div>
-                    ))}
-                </AnimatePresence>
-              </motion.div>
+              <GroupRequests token={token} userId={userId} />
             </div>
           </main>
         )}
@@ -1733,8 +1998,11 @@ const Dashboard = () => {
                         value={userData.bio}
                         onChange={(e) => handleInputChange(e, "bio")}
                       />
-                       <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
-                        <FaAddressBook className="mr-2 text-blue-500" size={16} />
+                      <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                        <FaAddressBook
+                          className="mr-2 text-blue-500"
+                          size={16}
+                        />
                         About
                       </label>
                       <input
@@ -1792,7 +2060,7 @@ const Dashboard = () => {
                         onChange={(e) => handleInputChange(e, "goal")}
                       />
 
-<label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                      <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
                         <FaLinkedin className="mr-2 text-blue-500" size={16} />
                         Linkedin
                       </label>
@@ -1804,9 +2072,7 @@ const Dashboard = () => {
                         onChange={(e) => handleInputChange(e, "linkedin")}
                       />
 
-
-
-<label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                      <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
                         <FaGithub className="mr-2 text-blue-500" size={16} />
                         Github
                       </label>
@@ -1817,8 +2083,6 @@ const Dashboard = () => {
                         value={userData.github}
                         onChange={(e) => handleInputChange(e, "github")}
                       />
-
-
                     </div>
 
                     <div className="relative">
@@ -1955,21 +2219,36 @@ const Dashboard = () => {
                         <FaEllipsisV size={16} />
                       </button>
                     </div>
-  {/* Modal for confirmation */}
-  <Modal isOpen={isModalOpen} onRequestClose={closeModal} className="modal-content" overlayClassName="modal-overlay">
-            <h2>Start a Video Call?</h2>
-            <button onClick={initiateVideoCall}>Yes, Start Call</button>
-            <button onClick={closeModal}>Cancel</button>
-          </Modal>
+                    {/* Modal for confirmation */}
+                    <Modal
+                      isOpen={isModalOpen}
+                      onRequestClose={closeModal}
+                      className="modal-content"
+                      overlayClassName="modal-overlay"
+                    >
+                      <h2>Start a Video Call?</h2>
+                      <button onClick={initiateVideoCall}>
+                        Yes, Start Call
+                      </button>
+                      <button onClick={closeModal}>Cancel</button>
+                    </Modal>
 
-          {/* Video Call UI */}
-          {isInCall && (
-            <div className="video-call-container">
-              <video ref={localVideoRef} autoPlay muted className="local-video" />
-              <video ref={remoteVideoRef} autoPlay className="remote-video" />
-            </div>
-          )}
-
+                    {/* Video Call UI */}
+                    {isInCall && (
+                      <div className="video-call-container">
+                        <video
+                          ref={localVideoRef}
+                          autoPlay
+                          muted
+                          className="local-video"
+                        />
+                        <video
+                          ref={remoteVideoRef}
+                          autoPlay
+                          className="remote-video"
+                        />
+                      </div>
+                    )}
 
                     <div
                       className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50"
@@ -1988,14 +2267,17 @@ const Dashboard = () => {
                               message.sender === "You"
                                 ? "justify-end"
                                 : "justify-start"
-                            }`}  
+                            }`}
                           >
                             <div
                               className={`max-w-xs lg:max-w-md ${
                                 message.sender === "You"
                                   ? "bg-blue-500 text-white"
                                   : "bg-white text-gray-800"
-                              } rounded-2xl p-3 shadow-md`} onContextMenu={(e) => handleRightClick(e, message)}
+                              } rounded-2xl p-3 shadow-md`}
+                              onContextMenu={(e) =>
+                                handleRightClick(e, message)
+                              }
                             >
                               <p className="break-words text-sm">
                                 {message.content}
@@ -2050,12 +2332,12 @@ const Dashboard = () => {
                             <FaPaperclip className="w-5 h-5" />
                           </button>
                           <motion.button
-                          className="text-gray-500 hover:text-blue-500 transition-colors duration-200"
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.9 }}
-                        >
-                          <FaVideo className="w-5 h-5" onClick={openModal}/>
-                        </motion.button>
+                            className="text-gray-500 hover:text-blue-500 transition-colors duration-200"
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                          >
+                            <FaVideo className="w-5 h-5" onClick={openModal} />
+                          </motion.button>
                         </div>
                         <button className="text-blue-500 hover:text-blue-600 transition-colors duration-200 text-sm font-medium">
                           Send Voice Message
@@ -2113,12 +2395,12 @@ const Dashboard = () => {
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.3 }}
                         className={`p-3 border-b border-gray-100 cursor-pointer transition-colors duration-200 ${
-                            groupId === group.id ? "active" : "" // Fix condition to match selected group by ID
-                          }`}
-                          onClick={() => {
-                            setGroupId(group.id); // Set the selected groupId
-                            connectWebSocket(group.id); // Establish WebSocket connection for this group
-                          }}
+                          groupId === group.id ? "active" : "" // Fix condition to match selected group by ID
+                        }`}
+                        onClick={() => {
+                          setGroupId(group.id); // Set the selected groupId
+                          connectWebSocket(group.id); // Establish WebSocket connection for this group
+                        }}
                         whileHover={{ scale: 1.02, x: 5 }}
                         whileTap={{ scale: 0.98 }}
                       >
@@ -2153,32 +2435,36 @@ const Dashboard = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                {groupId? (
-                  
-                    <><div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-4 border-b border-gray-200 flex justify-between items-center">
-                    <div className="flex items-center space-x-3">
-                      <img
-                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                        className="w-10 h-10 rounded-full border-2 border-white" />
-                      <div>
-                        <h2 className="text-lg font-bold text-white">
-                          {groups.find((group) => group.id === groupId)?.name}
-                        </h2>
-                        <p className="text-xs text-blue-100">
-                          Connected since{" "}
-                          {new Date(
-                            groups.find((group) => group.id === groupId)?.created_at
-                          ).toLocaleDateString()}
-                        </p>
+                {groupId ? (
+                  <>
+                    <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-4 border-b border-gray-200 flex justify-between items-center">
+                      <div className="flex items-center space-x-3">
+                        <img
+                          src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                          className="w-10 h-10 rounded-full border-2 border-white"
+                        />
+                        <div>
+                          <h2 className="text-lg font-bold text-white">
+                            {groups.find((group) => group.id === groupId)?.name}
+                          </h2>
+                          <p className="text-xs text-blue-100">
+                            Connected since{" "}
+                            {new Date(
+                              groups.find(
+                                (group) => group.id === groupId
+                              )?.created_at
+                            ).toLocaleDateString()}
+                          </p>
+                        </div>
                       </div>
+                      <button className="text-white hover:text-blue-200 transition-colors duration-200">
+                        <FaEllipsisV size={16} />
+                      </button>
                     </div>
-                    <button className="text-white hover:text-blue-200 transition-colors duration-200">
-                      <FaEllipsisV size={16} />
-                    </button>
-                  </div><div
-                    className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50"
-                    style={{ maxHeight: "calc(100vh - 250px)" }}
-                  >
+                    <div
+                      className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50"
+                      style={{ maxHeight: "calc(100vh - 250px)" }}
+                    >
                       <AnimatePresence>
                         {msg.map((message) => (
                           <motion.div
@@ -2187,14 +2473,18 @@ const Dashboard = () => {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -20 }}
                             transition={{ duration: 0.3 }}
-                            className={`flex ${message.sender_id === userId
+                            className={`flex ${
+                              message.sender_id === userId
                                 ? "justify-end"
-                                : "justify-start"}`}
+                                : "justify-start"
+                            }`}
                           >
                             <div
-                              className={`max-w-xs lg:max-w-md ${message.sender_id === userId
+                              className={`max-w-xs lg:max-w-md ${
+                                message.sender_id === userId
                                   ? "bg-blue-500 text-white"
-                                  : "bg-white text-gray-800"} rounded-2xl p-3 shadow-md`}
+                                  : "bg-white text-gray-800"
+                              } rounded-2xl p-3 shadow-md`}
                             >
                               <p className="break-words text-sm">
                                 {message.content}
@@ -2204,8 +2494,8 @@ const Dashboard = () => {
                           </motion.div>
                         ))}
                       </AnimatePresence>
-
-                    </div><div className="p-4 bg-white border-t border-gray-200">
+                    </div>
+                    <div className="p-4 bg-white border-t border-gray-200">
                       <div className="flex items-center space-x-3">
                         <input
                           type="text"
@@ -2213,13 +2503,15 @@ const Dashboard = () => {
                           onChange={(e) => setNewMsg(e.target.value)}
                           placeholder="Type a message..."
                           className="flex-1 px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200 text-sm"
-                          onKeyPress={(e) => e.key === "Enter" && sendMessageToGroup()} />
+                          onKeyPress={(e) =>
+                            e.key === "Enter" && sendMessageToGroup()
+                          }
+                        />
                         <motion.button
                           onClick={sendMessageToGroup}
                           className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition-colors duration-200 flex items-center justify-center"
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
-
                         >
                           <FaPaperPlane className="w-5 h-5" />
                         </motion.button>
@@ -2240,8 +2532,8 @@ const Dashboard = () => {
                           Send Voice Message
                         </button>
                       </div>
-                    </div></>
-                  
+                    </div>
+                  </>
                 ) : (
                   <div className="flex items-center justify-center h-full">
                     <p className="text-gray-500 text-lg font-light">
