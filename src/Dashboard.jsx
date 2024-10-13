@@ -1108,7 +1108,7 @@ const playAIInstructions = () => {
   return (
     <div className="flex h-screen bg-gray-100">
       <motion.aside
-        className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white shadow-xl"
+        className="bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 overflow-hidden text-white shadow-xl"
         variants={sidebarVariants}
         initial="open"
         animate={isOpen ? "open" : "closed"}
