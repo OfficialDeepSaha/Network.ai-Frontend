@@ -1287,7 +1287,7 @@ const playAIInstructions = () => {
                   <motion.div className="text-4xl  text-purple-600 justify-between">
                     <FaRobot />
                   </motion.div>
-                  <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mr-4">
+                  <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mr-4 animate-pulse">
                     AI-Powered Profile Matching
                   </h2>
                   
