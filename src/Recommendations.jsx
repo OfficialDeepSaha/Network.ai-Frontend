@@ -13,7 +13,7 @@ const Recommendations = ({ userId, handleSendConnectionRequest }) => {
     if (!userId) return;
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:8000/recommendations/?user_id=${userId}`);
+      const response = await axios.get(`https://network-ai-backend.onrender.com/recommendations/?user_id=${userId}`);
       setRecommendations(response.data);
     } catch (error) {
       console.error("Failed to get recommendations:", error);
