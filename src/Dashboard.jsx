@@ -1177,7 +1177,7 @@ const playAIInstructions = () => {
       </motion.aside>
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="bg-gradient-to-br from-gray-900 to-black shadow-sm ">
+        <header className="bg-white shadow-sm ">
           <div
             className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8"
             style={{ marginLeft: "145px" }}
@@ -1277,7 +1277,7 @@ const playAIInstructions = () => {
           { !load &&
             <main className="flex-1 overflow-y-auto bg-gradient-to-br from-gray-900 to-black  p-8">
               {/* AI Integration */}
-              <section className="p-6 bg-black bg-opacity-60 backdrop-filter backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden  m-4 overflow-hidden relative flex flex-col items-center">
+              <section className="p-6 bg-white rounded-3xl  shadow-2xl  m-4 overflow-hidden relative flex flex-col items-center">
                 <motion.div
                   className="flex items-center justify-center mb-4 space-x-4"
                   initial={{ opacity: 0, y: -20 }}
