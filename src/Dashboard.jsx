@@ -287,7 +287,7 @@ const Dashboard = () => {
     async function fetchChats() {
       try {
         const response = await axios.get(
-          `http://localhost:8000/get_chat_id?user_id=${userId}`
+          `https://network-ai-backend.onrender.com/get_chat_id?user_id=${userId}`
         );
 
         setChats(response.data);
@@ -304,7 +304,7 @@ const Dashboard = () => {
     // Only initialize WebSocket if `chatId` is set and `activeChat` is available
     if (activeChat) {
       const ws = new WebSocket(
-        `ws://localhost:8000/ws/${activeChat.chat_id}?token=${token}`
+        `ws://network-ai-backend.onrender.com/ws/${activeChat.chat_id}?token=${token}`
       );
 
       ws.onopen = () => {
@@ -346,7 +346,7 @@ const Dashboard = () => {
         try {
           console.log("Tabbar ChatID:- " + activeChat.chat_id);
           const response = await axios.get(
-            `http://localhost:8000/get_messages/${activeChat.chat_id}`
+            `https://network-ai-backend.onrender.com/get_messages/${activeChat.chat_id}`
           );
           setMessages(response.data);
           console.log("Fetched messages:", response.data);
@@ -362,7 +362,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const getGroupId = async () => {
-      const response = await fetch("http://localhost:8000/my_groups/", {
+      const response = await fetch("https://network-ai-backend.onrender.com/my_groups/", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -397,7 +397,7 @@ const Dashboard = () => {
           console.log("getch group msgID:- " + groupId);
 
           const response = await axios.get(
-            `http://localhost:8000/group_chats/${groupId}/messages`
+            `https://network-ai-backend.onrender.com/group_chats/${groupId}/messages`
           );
           setMsg(response.data);
           console.log("Fetched Group messages:", response.data);
@@ -421,7 +421,7 @@ const Dashboard = () => {
 
     // Open new WebSocket connection
     const socket = new WebSocket(
-      `ws://localhost:8000/ws/${selectedGroupId}?token=${token}`
+      `ws://network-ai-backend.onrender.com/ws/${selectedGroupId}?token=${token}`
     );
 
     // Handle WebSocket connection open
@@ -484,7 +484,7 @@ const Dashboard = () => {
       wsRef.current.readyState === WebSocket.OPEN
     ) {
       try {
-        await axios.post("http://localhost:8000/send_message/", {
+        await axios.post("https://network-ai-backend.onrender.com/send_message/", {
           chat_id: activeChat.chat_id,
           sender_id: userId,
           content: newMessage,
@@ -533,7 +533,7 @@ const Dashboard = () => {
   const handleAutoGenerateConnections = async () => {
     try {
       await axios.post(
-        `http://localhost:8000/auto_generate_connections?user_id=${userId}`
+        `https://network-ai-backend.onrender.com/auto_generate_connections?user_id=${userId}`
       );
       handleGetApprovalRequests();
     } catch (error) {
@@ -543,7 +543,7 @@ const Dashboard = () => {
 
   const fetchUserDetails = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/users/me/", {
+      const response = await fetch("https://network-ai-backend.onrender.com/users/me/", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -570,7 +570,7 @@ const Dashboard = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:8000/recommendations/?user_id=${userId}`
+        `https://network-ai-backend.onrender.com/recommendations/?user_id=${userId}`
       );
       setRecommendations(response.data);
     } catch (error) {
@@ -584,7 +584,7 @@ const Dashboard = () => {
     setLoading(true);
     try {
       await axios.post(
-        `http://localhost:8000/send_connection_request/?user_id=${userId}&target_user_id=${recId}`
+        `https://network-ai-backend.onrender.com/send_connection_request/?user_id=${userId}&target_user_id=${recId}`
       );
       alert("Connection request sent successfully");
       await handleGetRecommendations();
@@ -599,7 +599,7 @@ const Dashboard = () => {
     setLoading(true);
     try {
       await axios.post(
-        `http://localhost:8000/send_connection_request_to_other/?user_id=${userId}&target_user_id=${othId}`
+        `https://network-ai-backend.onrender.com/send_connection_request_to_other/?user_id=${userId}&target_user_id=${othId}`
       );
       alert("Connection request sent successfully");
       await handleGetRecommendations();
@@ -615,7 +615,7 @@ const Dashboard = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:8000/approval_requests/?user_id=${userId}`
+        `https://network-ai-backend.onrender.com/approval_requests/?user_id=${userId}`
       );
       setApprovalRequests(response.data);
     } catch (error) {
@@ -630,7 +630,7 @@ const Dashboard = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:8000/approval_requests_for_group/?user_id=${userId}`
+        `https://network-ai-backend.onrender.com/approval_requests_for_group/?user_id=${userId}`
       );
       setGroupRequests(response.data);
     } catch (error) {
@@ -645,7 +645,7 @@ const Dashboard = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:8000/network/${userId}`
+        `https://network-ai-backend.onrender.com/network/${userId}`
       );
       setNetworks(response.data);
     } catch (error) {
@@ -660,7 +660,7 @@ const Dashboard = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:8000/network_of_networks/${userId}`
+        `https://network-ai-backend.onrender.com/network_of_networks/${userId}`
       );
       setOtherNetworks(response.data[0].second_degree_users);
     } catch (error) {
@@ -674,7 +674,7 @@ const Dashboard = () => {
     setLoading(true);
     try {
       await axios.post(
-        `http://localhost:8000/handle_approval/${requestId}?approved=${approved}`,
+        `https://network-ai-backend.onrender.com/handle_approval/${requestId}?approved=${approved}`,
         {}, // Empty body since you're not sending data in the body
         {
           // Headers should be passed as the third argument
@@ -702,7 +702,7 @@ const Dashboard = () => {
     setLoading(true);
     try {
       await axios.post(
-        `http://localhost:8000/handle_approval_other_network/${requestId}?approved=${approved}`,
+        `https://network-ai-backend.onrender.com/handle_approval_other_network/${requestId}?approved=${approved}`,
         {}, // Empty body since you're not sending data in the body
         {
           // Headers should be passed as the third argument
@@ -789,7 +789,7 @@ const Dashboard = () => {
     try {
       console.log(paymentId);
       const response = await fetch(
-        "http://localhost:8000/api/store_subscription",
+        "https://network-ai-backend.onrender.com/api/store_subscription",
         {
           method: "POST",
           headers: {
@@ -829,7 +829,7 @@ const Dashboard = () => {
 
     setLoading(true);
     try {
-      await axios.post("http://localhost:8000/update_user/", {
+      await axios.post("https://network-ai-backend.onrender.com/update_user/", {
         user_id: userId,
         education: userData.education,
         experience: userData.experience,
@@ -848,7 +848,7 @@ const Dashboard = () => {
       formData.append("user_id", userId);
 
       const response = await axios.post(
-        "http://localhost:8000/upload_document/",
+        "https://network-ai-backend.onrender.com/upload_document/",
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -863,7 +863,7 @@ const Dashboard = () => {
       trainingFormData.append("file", documentFile);
 
       await axios.post(
-        "http://localhost:8000/auto_train_agent/",
+        "https://network-ai-backend.onrender.com/auto_train_agent/",
         trainingFormData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -898,7 +898,7 @@ const Dashboard = () => {
       setIsLoadingAIResponse(true); // Set loading state
 
       // Call OpenAI API (replace 'your-openai-api-key' with your actual key)
-      const response = await fetch("http://localhost:8000/api/askAI", {
+      const response = await fetch("https://network-ai-backend.onrender.com/api/askAI", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -979,7 +979,7 @@ const Dashboard = () => {
 
     try {
       const response = await axios.post(
-        `http://localhost:8000/upload_audio/?user_id=${userId}`,
+        `https://network-ai-backend.onrender.com/upload_audio/?user_id=${userId}`,
         formData,
         {
           headers: {
