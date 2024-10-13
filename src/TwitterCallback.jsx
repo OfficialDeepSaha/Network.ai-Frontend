@@ -22,7 +22,7 @@ const TwitterCallback = () => {
 
       try {
         setStatus('Sending request to backend...');
-        const response = await axios.get(`http://localhost:8000/api/twitter/callback`, {
+        const response = await axios.get(`https://network-ai-backend.onrender.com/api/twitter/callback`, {
           params: { oauth_token, oauth_verifier }
         });
 
