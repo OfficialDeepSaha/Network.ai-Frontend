@@ -1275,7 +1275,7 @@ const playAIInstructions = () => {
           
 
           { !load &&
-            <main className="flex-1 mx-auto overflow-y-auto bg-white p-8">
+            <main className="flex-1 overflow-y-auto bg-gradient-to-br from-gray-900 to-black  p-8">
               {/* AI Integration */}
               <section className="p-6 bg-black bg-opacity-60 backdrop-filter backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden  m-4 overflow-hidden relative flex flex-col items-center">
                 <motion.div
