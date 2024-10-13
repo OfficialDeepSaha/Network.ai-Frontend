@@ -30,6 +30,8 @@ import {
   FaMicrophone,
   FaStop,
   FaBrain,
+  FaUser,
+  FaInfoCircle,
 } from "react-icons/fa";
 import Modal from "react-modal"; // For confirmation dialog
 import { motion, AnimatePresence } from "framer-motion";
@@ -74,7 +76,7 @@ const Dashboard = () => {
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(false);
   const [matchingProgress, setMatchingProgress] = useState(0);
-  const [activeTab, setActiveTab] = useState("recommendations");
+  const [activeTab, setActiveTab] = useState("home");
   const [approvalRequests, setApprovalRequests] = useState([]);
   const [groupRequests, setGroupRequests] = useState([]);
   const { width, height } = useWindowSize();
@@ -86,13 +88,19 @@ const Dashboard = () => {
   const remoteVideoRef = useRef(null);
   const [chats, setChats] = useState([]); // List of available chats
   const [isRecording, setIsRecording] = useState(false);
+  const [mediaStream, setMediaStream] = useState(null);
   const [audioLevel, setAudioLevel] = useState(0);
+  const [load , setLoad] = useState(false);
   const [recordingDuration, setRecordingDuration] = useState(0);
   const [groups, setGroups] = useState([]);
   const [activeChat, setActiveChat] = useState(null); // Currently selected chat
   const [messages, setMessages] = useState([]); // Messages in active chat
   const [newMessage, setNewMessage] = useState(""); // Message input state
   const wsRef = useRef(null); // WebSocket reference
+  const [audioPlayed, setAudioPlayed] = useState(() => {
+    // Check if audio has already been played in this session
+    return sessionStorage.getItem('audioPlayed') === 'true';
+  });
   const [chatId, setChatId] = useState(null);
   const [documentFile, setDocumentFile] = useState(null);
   const [user, setUser] = useState([]);
@@ -254,11 +262,9 @@ const Dashboard = () => {
   };
 
   const handleInputChange = (e, field) => {
-    setUserData((prevData) => ({ ...prevData, [field]: e.target.value }));
-    setUserDetails((userDetails) => ({
-      ...userDetails,
-      [field]: e.target.value,
-    }));
+    const value = e.target.value;
+    setUserData(prevData => ({ ...prevData, [field]: value }));
+    setUserDetails(prevDetails => ({ ...prevDetails, [field]: value }));
   };
 
   const [userData, setUserData] = useState({
@@ -814,7 +820,8 @@ const Dashboard = () => {
     setDocumentFile(e.target.files[0]);
   };
 
-  const handleUpdate = async () => {
+  const handleUpdate = async (e) => {
+    e.preventDefault();
     if (!documentFile) {
       alert("Please select a document to upload");
       return;
@@ -964,7 +971,9 @@ const Dashboard = () => {
       return;
     }
 
-    setLoading(true);
+    setLoad(true);
+    playAIComplete();
+    console.log("audio button clicked")
     const formData = new FormData();
     formData.append("audio", blob, "recording.mp3");
 
@@ -984,7 +993,7 @@ const Dashboard = () => {
     } catch (error) {
       console.error("Error uploading audio:", error);
     } finally {
-      setLoading(false);
+      setLoad(false);
     }
   };
 
@@ -997,6 +1006,9 @@ const Dashboard = () => {
 
   // Start recording logic
   const handleStartRecording = () => {
+    console.log("audio button clicked")
+    if (!mediaStream) return;
+
     setIsRecording(true);
     startRecording();
   };
@@ -1017,6 +1029,59 @@ const Dashboard = () => {
     }
     return () => clearInterval(interval);
   }, [isRecording]);
+
+
+
+
+
+
+  useEffect(() => {
+    if (activeTab === 'home' && !audioPlayed) {
+      // Request microphone permission when the home tab is active
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then((stream) => {
+          setMediaStream(stream);
+          // Play AI instructions after permission is granted
+          playAIInstructions();
+          setAudioPlayed(false)
+          
+        })
+        .catch((error) => {
+          console.error('Microphone access denied', error);
+        });
+    }
+  }, [activeTab , audioPlayed]);
+
+  // Function to play pre-recorded AI voice instructions
+  const playAIInstructions = () => {
+    const audio = new Audio('/welcome.wav'); // Path to your AI voice instructions
+    audio.play();
+    audio.onended = () => {
+      setAudioPlayed(true);
+      // Save the played state in sessionStorage to avoid replay on refresh
+      sessionStorage.setItem('audioPlayed', 'true');
+    };
+    
+  };
+
+  const playAIComplete = () => {
+    const audio = new Audio('/complete.wav'); // Path to your AI voice instructions
+    audio.play();
+    
+  };
+
+
+    // Optional cleanup for media stream on component unmount
+    useEffect(() => {
+      return () => {
+        if (mediaStream) {
+          mediaStream.getTracks().forEach(track => track.stop());
+        }
+      };
+    }, [mediaStream]);
+
+
+
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -1170,7 +1235,24 @@ const Dashboard = () => {
         </header>
 
         {activeTab === "home" && (
+
+          
+        
           <>
+          
+          {load && recommend==0 ? <LoadingProfileMatching matchingProgress={matchingProgress} /> : ""}
+
+
+
+
+
+         
+
+
+
+          
+
+          { !load &&
             <main className="flex-1 overflow-y-auto bg-gray-50 p-8">
               {/* AI Integration */}
               <section className="p-6 bg-white rounded-2xl shadow-xl m-4 overflow-hidden relative flex flex-col items-center">
@@ -1186,6 +1268,7 @@ const Dashboard = () => {
                   <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mr-4">
                     AI-Powered Profile Matching
                   </h2>
+                  
                 </motion.div>
                 <div className="flex items-center space-x-4">
                   <motion.button
@@ -1220,17 +1303,13 @@ const Dashboard = () => {
                 </div>
 
 
-
-                
-   {loading && <LoadingProfileMatching matchingProgress={matchingProgress} />}
-
-   {recommend && recommend.length> 0  ? (
+                {recommend &&  recommend.length> 0  ? (
    
    
    
    
    
-   <main className="flex-1 overflow-y-auto bg-gray-50 p-8">
+   <main className="flex-1 overflow-y-auto bg-white p-8">
             <div className="max-w-7xl mx-auto">
               <motion.h2
                 className="text-3xl font-bold mb-6 relative inline-block"
@@ -1239,7 +1318,7 @@ const Dashboard = () => {
                 transition={{ duration: 0.5 }}
               >
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
-                  Suggested Connections
+                  Recommendations
                 </span>
                 <motion.span
                   className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-purple-600"
@@ -1254,24 +1333,7 @@ const Dashboard = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
-                {["All", "Tech", "Health", "Climate"].map((category) => (
-                  <motion.button
-                    key={category}
-                    onClick={() => setActiveCategory(category)}
-                    className={`px-4 py-2 text-sm font-medium rounded-full transition-colors duration-200 ${
-                      activeCategory === category
-                        ? "text-white bg-gradient-to-r from-blue-500 to-purple-500 shadow-md"
-                        : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
-                    }`}
-                    whileHover={{
-                      scale: 1.05,
-                      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                    }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    {category}
-                  </motion.button>
-                ))}
+                
               </motion.nav>
               <motion.div 
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" 
@@ -1344,7 +1406,8 @@ const Dashboard = () => {
             
             </div>
           </main>
-   
+
+               
             ) : ""
    
    
@@ -1352,7 +1415,13 @@ const Dashboard = () => {
    
    
    
+   
    }
+
+
+
+   
+
 
                 <AnimatePresence>
                   {isRecording && (
@@ -1450,15 +1519,8 @@ const Dashboard = () => {
                 <div className="absolute -bottom-8 -right-8 w-48 h-48 bg-gradient-to-br from-blue-200 to-purple-200 rounded-full opacity-50 blur-3xl"></div>
               </section>
             </main>
+}
           </>
-
-                
-
-
-
-
-
-
 
         )}
 
@@ -1937,185 +1999,160 @@ const Dashboard = () => {
         )}
 
         {activeTab === "settings" && (
-          <main className="flex-1 overflow-y-auto bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
-            <div className="max-w-4xl mx-auto">
-              <motion.h2
-                className="text-3xl font-bold text-gray-900 mb-6 text-center"
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
+         
+      <main className="flex-1 p-6 overflow-y-auto">
+      <motion.h1
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="text-4xl font-bold mb-8 text-center"
+      >
+        <motion.span
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+          className="inline-block bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600"
+        >
+          User Settings
+        </motion.span>
+      </motion.h1>
+      <div className="flex flex-col md:flex-row gap-6">
+        {/* Profile Card */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="w-full md:w-1/3 bg-white rounded-2xl shadow-2xl overflow-hidden border border-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
+        >
+          <div className="h-40 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 relative overflow-hidden">
+            <motion.img
+              src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80"
+              alt="Banner"
+              className="w-full h-full object-cover opacity-80"
+              initial={{ scale: 1.2 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 10, repeat: Infinity, repeatType: "reverse" }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+          </div>
+          <div className="-mt-20 px-6 pb-6">
+            <div className="relative w-36 h-36 mx-auto">
+              <img
+                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
+                alt="Profile"
+                className="w-full h-full rounded-full object-cover border-4 border-white shadow-lg"
+              />
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className="absolute bottom-0 right-0 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full p-2 hover:from-blue-600 hover:to-purple-700 transition duration-200 shadow-md"
+                aria-label="Edit profile picture"
               >
-                User Settings
-              </motion.h2>
-              <motion.div
-                className="bg-white rounded-2xl shadow-xl p-8"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-              >
-                <div className="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
-                  <div className="md:w-1/3 flex flex-col items-center">
-                    <div className="relative mb-4">
-                      <img
-                        src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80"
-                        alt="Profile"
-                        className="w-32 h-32 rounded-full border-4 border-blue-500 shadow-lg"
-                      />
-                      <button className="absolute bottom-0 right-0 bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition-colors duration-200">
-                        <FaEdit size={16} />
-                      </button>
-                    </div>
-                    {user &&
-                      user.map((u, id) => (
-                        <>
-                          <h3 className="text-2xl font-semibold text-center mb-2">
-                            {u.name}
-                          </h3>
-                          <p className="text-sm text-gray-600 text-center mb-4">
-                            {u.bio}
-                          </p>
-                        </>
-                      ))}
-                    <div className="flex space-x-3">
-                      <button className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-200 text-sm font-medium">
-                        Follow
-                      </button>
-                      <button className="px-4 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-colors duration-200 text-sm font-medium">
-                        Message
-                      </button>
-                    </div>
-                  </div>
-                  <div className="md:w-2/3 space-y-4">
-                    <div className="relative">
-                      <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
-                        <FaEdit className="mr-2 text-blue-500" size={16} />
-                        Bio
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Add a bio"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200 text-sm"
-                        value={userData.bio}
-                        onChange={(e) => handleInputChange(e, "bio")}
-                      />
-                      <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
-                        <FaAddressBook
-                          className="mr-2 text-blue-500"
-                          size={16}
-                        />
-                        About
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Add a about"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200 text-sm"
-                        value={userData.about}
-                        onChange={(e) => handleInputChange(e, "about")}
-                      />
-                      <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
-                        <FaBriefcase className="mr-2 text-blue-500" size={16} />
-                        Experience
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Add a experience"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200 text-sm"
-                        value={userData.experience}
-                        onChange={(e) => handleInputChange(e, "experience")}
-                      />
-                      <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
-                        <FaGraduationCap
-                          className="mr-2 text-blue-500"
-                          size={16}
-                        />
-                        Education
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Add a education"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200 text-sm"
-                        value={userData.education}
-                        onChange={(e) => handleInputChange(e, "education")}
-                      />
-                      <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
-                        <FaGlobe className="mr-2 text-blue-500" size={16} />
-                        Twitter
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Add a twitter"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200 text-sm"
-                        value={userData.twitter_handle}
-                        onChange={(e) => handleInputChange(e, "twitter_handle")}
-                      />
-                      <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
-                        <FaBullseye className="mr-2 text-blue-500" size={16} />
-                        Goal
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Add a goal"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200 text-sm"
-                        value={userData.goal}
-                        onChange={(e) => handleInputChange(e, "goal")}
-                      />
-
-                      <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
-                        <FaLinkedin className="mr-2 text-blue-500" size={16} />
-                        Linkedin
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Add a linkedin"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200 text-sm"
-                        value={userData.linkedin}
-                        onChange={(e) => handleInputChange(e, "linkedin")}
-                      />
-
-                      <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
-                        <FaGithub className="mr-2 text-blue-500" size={16} />
-                        Github
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Add a github"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200 text-sm"
-                        value={userData.github}
-                        onChange={(e) => handleInputChange(e, "github")}
-                      />
-                    </div>
-
-                    <div className="relative">
-                      <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
-                        <FaUpload className="mr-2 text-blue-500" size={16} />
-                        Document
-                      </label>
-                      <div className="flex items-center">
-                        <label className="flex-1 flex items-center px-4 py-2 bg-white text-blue-600 rounded-lg border border-blue-600 cursor-pointer hover:bg-blue-50 transition-colors duration-200 text-sm">
-                          <FaUpload className="mr-2" size={16} />
-                          <span>Choose file</span>
-                          <input
-                            type="file"
-                            className="hidden"
-                            onChange={handleDocumentChange}
-                          />
-                        </label>
-                        <span className="ml-3 text-sm text-gray-500"></span>
-                      </div>
-                    </div>
-                    <motion.button
-                      className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm font-medium shadow-md"
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={handleUpdate}
-                    >
-                      Save Changes
-                    </motion.button>
-                  </div>
-                </div>
-              </motion.div>
+                <FaEdit />
+              </motion.button>
             </div>
-          </main>
+            { user && user.map((us)=> (
+            <div key={us.id}><h2 className="text-2xl font-bold text-center mt-4 text-gray-800">{us.name}</h2><p className="text-center text-gray-600 mt-2">{us.bio}</p></div>
+))}
+            <div className="flex justify-center space-x-4 mt-6">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-full hover:from-blue-600 hover:to-purple-700 transition duration-200 shadow-md"
+              >
+                Follow
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-gray-200 text-gray-800 px-6 py-2 rounded-full hover:bg-gray-300 transition duration-200 shadow-md"
+              >
+                Message
+              </motion.button>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Form */}
+        <motion.form
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+          onSubmit={handleUpdate}
+          className="w-full md:w-2/3 bg-white rounded-2xl shadow-2xl p-8 border border-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {
+              [
+                { name: "bio", label: "Bio", placeholder: "Enter your bio", icon: FaUser },
+                { name: "about", label: "About", placeholder: "Tell us about yourself", icon: FaInfoCircle },
+                { name: "experience", label: "Experience", placeholder: "Your work experience", icon: FaBriefcase },
+                { name: "education", label: "Education", placeholder: "Your educational background", icon: FaGraduationCap },
+                { name: "twitter", label: "Twitter", placeholder: "Your Twitter handle", icon: FaTwitter },
+                { name: "goal", label: "Goal", placeholder: "Your current goal", icon: FaBullseye },
+                { name: "linkedin", label: "LinkedIn", placeholder: "Your LinkedIn profile", icon: FaLinkedin },
+                { name: "github", label: "GitHub", placeholder: "Your GitHub profile", icon: FaGithub }
+              ].map((field) => (
+                <div key={field.name} className="space-y-2">
+                  <label htmlFor={field.name} className="block text-sm font-medium text-gray-700">{field.label}</label>
+                  <div className="relative">
+                    <AnimatePresence>
+                      <motion.input
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                        type="text"
+                        id={field.name}
+                        name={field.name}
+                        value={userData[field.name]}
+                        onChange={(e) => handleInputChange(e, field.name)}
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 pl-10"
+                        placeholder={field.placeholder}
+                        whileFocus={{ scale: 1.05, boxShadow: "0 0 0 3px rgba(99, 102, 241, 0.5)" }}
+                      />
+                    </AnimatePresence>
+                    <field.icon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  </div>
+                  
+                </div>
+              ))
+            }
+          </div>
+          <div className="mt-6">
+            <label htmlFor="document" className="block text-sm font-medium text-gray-700">Document</label>
+            <div className="mt-1 relative">
+              <input
+                type="file"
+                id="document"
+                name="document"
+                className="mt-1 block w-full text-sm text-gray-500
+                file:mr-4 file:py-2 file:px-4
+                file:rounded-full file:border-0
+                file:text-sm file:font-semibold
+                file:bg-gradient-to-r file:from-blue-500 file:to-purple-600 file:text-white
+                hover:file:bg-gradient-to-r hover:file:from-blue-600 hover:file:to-purple-700 transition duration-200"
+                onChange={handleDocumentChange}
+              />
+              
+            </div>
+          </div>
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="mt-8"
+          >
+            <button
+              type="submit"
+              className="w-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white font-semibold py-3 px-4 rounded-lg hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 shadow-lg"
+              
+            >
+              Save Changes
+            </button>
+          </motion.div>
+        </motion.form>
+      </div>
+    </main>
         )}
 
         {activeTab === "chat" && (

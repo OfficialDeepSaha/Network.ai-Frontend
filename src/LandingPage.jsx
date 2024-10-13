@@ -2,11 +2,19 @@ import React, { useEffect, useState } from "react";
 import { FaRobot, FaUsers, FaChartLine, FaFacebookF, FaTwitter, FaLinkedinIn, FaInstagram, FaBars, FaTimes, FaQuoteLeft, FaQuoteRight, FaComments, FaUserFriends } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { GiRobotAntennas } from "react-icons/gi";
+import { GrRobot } from "react-icons/gr";
+import { PiRobotBold } from "react-icons/pi";
+import { LiaRobotSolid } from "react-icons/lia";
+import { BsRobot } from "react-icons/bs";
 
 const LandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
   const navigate = useNavigate();
+  const [isVisible, setIsVisible] = useState(false);
+  const [stars, setStars] = useState([]);
+  const [asteroids, setAsteroids] = useState([]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -21,6 +29,51 @@ const LandingPage = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
+
+
+
+  useEffect(() => {
+    const generateStars = () => {
+      const newStars = [];
+      for (let i = 0; i < 1000; i++) {
+        newStars.push({
+          id: i,
+          left: `${Math.random() * 100}%`,
+          top: `${Math.random() * 100}%`,
+          size: Math.random() * 3 + 1,
+          animationDuration: `${Math.random() * 5 + 2}s`,
+        });
+      }
+      setStars(newStars);
+    };
+
+    const generateAsteroids = () => {
+      const newAsteroids = [];
+      for (let i = 0; i < 200; i++) {
+        newAsteroids.push({
+          id: i,
+          top: `${Math.random() * 100}%`,
+          left: `${Math.random() * 100}%`,
+          size: Math.random() * 5 + 2,
+          animationDuration: `${Math.random() * 300 + 200}s`,
+          rotationSpeed: Math.random() * 720 + 360,
+          direction: Math.random() < 0.5 ? -1 : 1,
+        });
+      }
+      setAsteroids(newAsteroids);
+    };
+
+    generateStars();
+    generateAsteroids();
+  }, []);
+
+
+
+
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
@@ -47,104 +100,128 @@ const LandingPage = () => {
     }
   };
 
+  const fadeIn = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
   return (
-    <div className="font-sans bg-gradient-to-b from-gray-900 to-black text-white">
-      {/* Header */}
-      <header className="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center">
-          <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            className="flex items-center"
-          >
-            
-            <div className="size-4 mr-3">
-            <svg
-              className="bouncing-svg"
-              viewBox="0 0 48 48"
-              width={26}
-              height={26}
-              style={{marginTop:"-4px"}}
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <defs>
-                <linearGradient
-                  id="gradientColors"
-                  x1="0%"
-                  y1="0%"
-                  x2="100%"
-                  y2="100%"
-                >
-                  <stop offset="0%" style={{ stopColor: "#00b5ff" }} />
-                  <stop offset="100%" style={{ stopColor: "#ab4bf2" }} />
-                </linearGradient>
-              </defs>
-              <path
-                d="M24 4C25.7818 14.2173 33.7827 22.2182 44 24C33.7827 25.7818 25.7818 33.7827 24 44C22.2182 33.7827 14.2173 25.7818 4 24C14.2173 22.2182 22.2182 14.2173 24 4Z"
-                fill="url(#gradientColors)" />
-            </svg>
-          </div>
-            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">Network.ai</span>
-            </motion.div>
-          </div>
-          <nav className="hidden md:flex space-x-6">
-            <a href="#" className="text-gray-700 hover:text-blue-600 transition duration-300" onClick={()=> navigate('/register')}>Register</a>
-            <a href="#" className="text-gray-700 hover:text-blue-600 transition duration-300">Features</a>
-            <a href="#" className="text-gray-700 hover:text-blue-600 transition duration-300">Testimonials</a>
-            <a href="#" className="text-gray-700 hover:text-blue-600 transition duration-300">Contact</a>
-          </nav>
-          <button className="md:hidden text-gray-700" onClick={toggleMenu}>
-            {isMenuOpen ? <FaTimes className="text-2xl" /> : <FaBars className="text-2xl" />}
-          </button>
-        </div>
-        {isMenuOpen && (
-          <div className="md:hidden bg-white py-4">
-            <nav className="flex flex-col space-y-4 items-center">
-              <a href="#" className="text-gray-700 hover:text-blue-600 transition duration-300">Home</a>
-              <a href="#" className="text-gray-700 hover:text-blue-600 transition duration-300">Features</a>
-              <a href="#" className="text-gray-700 hover:text-blue-600 transition duration-300">Testimonials</a>
-              <a href="#" className="text-gray-700 hover:text-blue-600 transition duration-300">Contact</a>
-            </nav>
-          </div>
-        )}
-      </header>
+    <div className="relative min-h-screen bg-gradient-to-br from-indigo-900 to-black text-white overflow-hidden shadow-xl">
 
-      {/* Hero Section */}
-      <div className="pt-16"> 
-        <div className="relative h-screen bg-cover bg-center overflow-hidden" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80')" }}>
-          <div className="absolute inset-0 bg-black opacity-70"></div>
-          <motion.div 
-            className="relative z-10 flex flex-col items-center justify-center h-full text-white"
-            initial="hidden"
-            animate="visible"
-            variants={fadeInUp}
-          >
-            <motion.h1 
-              className="text-5xl md:text-7xl font-bold mb-4 text-center leading-tight"
-              animate={pulseAnimation}
-            >
-              Unleash the power of <br/><span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">AI networking!</span>
-            </motion.h1>
-            <p className="text-xl md:text-2xl mb-8 text-center">Connect with like-minded individuals effortlessly</p>
-            <motion.button 
-              className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold py-3 px-8 rounded-full transition duration-300 transform hover:scale-105 hover:shadow-lg"
-              whileHover={{ scale: 1.05, boxShadow: "0px 0px 8px rgb(59, 130, 246)" }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Get Started
-            </motion.button>
-          </motion.div>
-        </div>
+
+
+ {/* Background Animation */}
+ <div className="absolute inset-0 overflow-hidden">
+        {stars.map((star) => (
+          <div
+            key={star.id}
+            className="absolute rounded-full"
+            style={{
+              left: star.left,
+              top: star.top,
+              width: `${star.size}px`,
+              height: `${star.size}px`,
+              background: `radial-gradient(circle at center, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%)`,
+              animation: `twinkle ${star.animationDuration} infinite`,
+            }}
+          ></div>
+        ))}
+        {asteroids.map((asteroid) => (
+          <div
+            key={asteroid.id}
+            className="absolute bg-gradient-to-br from-gray-300 to-gray-500 rounded-full"
+            style={{
+              top: asteroid.top,
+              left: asteroid.left,
+              width: `${asteroid.size}px`,
+              height: `${asteroid.size}px`,
+              animation: `moveAsteroid ${asteroid.animationDuration} linear infinite, rotate ${asteroid.rotationSpeed}s linear infinite`,
+              transform: `translateX(${asteroid.direction * 100}vw)`,
+            }}
+          ></div>
+        ))}
       </div>
 
+
+
+
+    <header className="container mx-auto px-4 py-8 flex justify-between items-center">
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={fadeIn}
+        transition={{ duration: 0.5 }}
+        className="flex items-center space-x-3"
+      >
+        <div className="relative">
+            <BsRobot className="text-4xl text-yellow-400" />
+            <div className="absolute -top-2 left-3  w-3 h-3 bg-green-500 rounded-full animate-pulse" ></div>
+          </div>
+
+         
+        <h1 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-500">Network.ai</h1>
+      </motion.div>
+      <nav className="flex-grow">
+        <motion.ul
+          initial="hidden"
+          animate="visible"
+          variants={fadeIn}
+          transition={{ duration: 0.5, staggerChildren: 0.1 }}
+          className="flex justify-center space-x-6"
+        >
+          {["Home", "Features", "About", "Contact"].map((item) => (
+            <motion.li key={item} variants={fadeIn}>
+              <a
+                href="#"
+                className="hover:text-yellow-300 transition duration-300 border-b-2 border-transparent hover:border-yellow-300"
+              >
+                {item}
+              </a>
+            </motion.li>
+          ))}
+        </motion.ul>
+      </nav>
+      <motion.button
+          whileHover={{ scale: 1.05, boxShadow: "0 0 15px rgba(255, 255, 255, 0.5)" }}
+          whileTap={{ scale: 0.95 }}
+          className="font-bold shadow-lg bg-gradient-to-r from-pink-400 to-purple-500 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
+          onClick={()=> navigate('/register')}
+        >
+          Get Started
+        </motion.button>
+    </header>
       {/* Body */}
       <main className="container mx-auto px-4 py-16">
+      <motion.section
+          initial="hidden"
+          animate={isVisible ? "visible" : "hidden"}
+          variants={fadeIn}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-6xl md:text-8xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500">
+            Connect Smarter with <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600 font-extrabold">AI</span>
+          </h2>
+          <p className="text-2xl md:text-3xl mb-8 text-gray-300">
+            Automate your networking based on shared interests and goals
+          </p>
+          <motion.button
+            whileHover={{ scale: 1.05, boxShadow: "0 0 15px rgba(255, 255, 255, 0.5)" }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-gradient-to-r from-yellow-400 to-pink-500 text-indigo-900 font-bold py-4 px-10 rounded-full transition duration-300 shadow-lg text-xl transform transition transform duration-200 hover:-translate-y-1 transform transition hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 animate-pulse "
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+            aria-label="Get Started"
+          >
+            Join Network
+          </motion.button>
+        </motion.section>
         <section className="mb-20">
           <motion.h2 
-            className="text-4xl md:text-6xl font-bold mb-16 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400"
+            className="text-4xl md:text-6xl font-bold mb-16 text-center bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-pink-500"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -236,7 +313,7 @@ const LandingPage = () => {
 
         <section className="mb-20">
           <motion.h2 
-            className="text-4xl md:text-6xl font-bold mb-16 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400"
+            className="text-4xl md:text-6xl font-bold mb-16 text-center bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-pink-600"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -297,7 +374,7 @@ const LandingPage = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-gradient-to-r from-gray-900 to-black text-white py-12">
+      <footer className="bg-indigo-900 py-8 text-white py-12">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <motion.div 
@@ -346,7 +423,7 @@ const LandingPage = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
-            <p>&copy; 2024 Network.ai. All rights reserved.</p>
+            <p>&copy; 2024 <span className="font-bold bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-500">Network.ai</span>. All rights reserved.</p>
           </motion.div>
         </div>
       </footer>

@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import PersonalInfo from "./PersonalInfo";
+import React from 'react'
+import Login from './Login';
 import './Header.css'
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
-
-const Test2 = () => {
-  const clientId = '1034870438738-phohfef9ria0c7j2dsp296irsnaqlmt3.apps.googleusercontent.com';
+const LoginFinal = () => {
+  
+    const clientId = '1034870438738-phohfef9ria0c7j2dsp296irsnaqlmt3.apps.googleusercontent.com';
   return (
     <div className="bg-gradient-to-b from-blue-50 via-white to-indigo-50 group/design-root overflow-x-hidden">
       <><header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e7eef4] px-10 py-4">
@@ -48,11 +48,11 @@ const Test2 = () => {
     </header></>
       <GoogleOAuthProvider clientId={clientId}>
       
-      <PersonalInfo />
+      <Login/>
       
       </GoogleOAuthProvider>
     </div>
-  );
-};
+  )
+}
 
-export default Test2;
+export default LoginFinal;

@@ -5,13 +5,12 @@ const GitHubCallback = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Parse the authorization code from URL parameters
     const queryParams = new URLSearchParams(window.location.search);
     const code = queryParams.get('code');
   
     if (code) {
       // Exchange the authorization code for a JWT token from the backend
-      fetch(`http://127.0.0.1:8000/auth/github?code=${code}`, {
+      fetch(`http://127.0.0.1:8000/auth/github/register?code=${code}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -26,19 +25,21 @@ const GitHubCallback = () => {
       .then((data) => {
         if (data.access_token) {
           localStorage.setItem('token', data.access_token);
-          localStorage.setItem('user_id', data.user_id); // Add this
+          localStorage.setItem('user_id', data.user_id);
           navigate('/home');
         } else {
-          console.error('Login failed:', data);
+          console.error('Registration failed:', data);
         }
       })
       .catch((error) => {
-        console.error('Error during GitHub login:', error);
+        console.error('Error during GitHub registration:', error);
       });
+    } else {
+      console.error('Authorization code not found');
     }
   }, [navigate]);
 
-  return <div>Loading...</div>;
+  return <div>Registering...</div>;
 };
 
 export default GitHubCallback;
