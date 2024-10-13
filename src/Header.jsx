@@ -35,7 +35,7 @@ export const Header = () => {
           </div>
           <div className="flex items-center text-indigo-800">
             <span className="animate-colorPulse h-6 w-auto text-indigo-600 sm:h-8" />
-            <h2 className="animate-colorPulse text-2xl bg-gradient-to-r from-purple-500 to-indigo-600 font-semibold">Network.ai</h2>
+            <h2 className="animate-colorPulse text-2xl bg-gradient-to-r from-purple-500 to-indigo-600 font-bold">Network.ai</h2>
           </div>
         </div>
       </div>
