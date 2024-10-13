@@ -1053,16 +1053,38 @@ const Dashboard = () => {
   }, [activeTab , audioPlayed]);
 
   // Function to play pre-recorded AI voice instructions
-  const playAIInstructions = () => {
-    const audio = new Audio('/welcome.wav'); // Path to your AI voice instructions
-    audio.play();
+  // const playAIInstructions = () => {
+  //   const audio = new Audio('/welcome.wav'); // Path to your AI voice instructions
+  //   audio.play();
+  //   audio.onended = () => {
+  //     setAudioPlayed(true);
+  //     // Save the played state in sessionStorage to avoid replay on refresh
+  //     sessionStorage.setItem('audioPlayed', 'true');
+  //   };
+    
+  // };
+
+
+
+const playAIInstructions = () => {
+  const audio = new Audio('/welcome.wav');
+  
+  // Preload the audio
+  audio.load();
+
+  audio.play().then(() => {
     audio.onended = () => {
       setAudioPlayed(true);
-      // Save the played state in sessionStorage to avoid replay on refresh
       sessionStorage.setItem('audioPlayed', 'true');
     };
-    
-  };
+  }).catch((error) => {
+    console.error('Error playing audio:', error);
+  });
+};
+
+
+
+  
 
   const playAIComplete = () => {
     const audio = new Audio('/complete.wav'); // Path to your AI voice instructions
