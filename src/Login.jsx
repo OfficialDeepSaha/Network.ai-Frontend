@@ -41,7 +41,7 @@ const Login = () => {
     formBody.append("password", formData.password);
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/token/", {
+      const response = await fetch("https://network-ai-backend.onrender.com/token/", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded", // Set correct header for form data
@@ -70,7 +70,7 @@ const Login = () => {
     const tokenId = response.credential;
     try {
       const res = await fetch(
-        `http://127.0.0.1:8000/google-login/?google_token=${tokenId}`,
+        `https://network-ai-backend.onrender.com/google-login/?google_token=${tokenId}`,
         {
           method: "POST",
           headers: {
@@ -108,7 +108,7 @@ const Login = () => {
     setIsLoading(true);
     try {
       const response = await axios.get(
-        "http://localhost:8000/api/twitter/register"
+        "https://network-ai-backend.onrender.com/api/twitter/register"
       );
       window.location.href = response.data.auth_url;
     } catch (error) {
