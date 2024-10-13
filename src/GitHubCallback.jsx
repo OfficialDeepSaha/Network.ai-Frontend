@@ -10,7 +10,7 @@ const GitHubCallback = () => {
   
     if (code) {
       // Exchange the authorization code for a JWT token from the backend
-      fetch(`http://127.0.0.1:8000/auth/github/register?code=${code}`, {
+      fetch(`https://network-ai-backend.onrender.com/auth/github/register?code=${code}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
