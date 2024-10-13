@@ -13,7 +13,7 @@ const ConnectionRequests = ({ userId , token}) => {
       setLoading(true); // Set loading to true before fetching
       try {
         const response = await axios.get(
-          `http://localhost:8000/approval_requests/?user_id=${userId}`
+          `https://network-ai-backend.onrender.com/approval_requests/?user_id=${userId}`
         );
         setApprovalRequests(response.data); // Set fetched approval requests
       } catch (error) {
@@ -31,7 +31,7 @@ const ConnectionRequests = ({ userId , token}) => {
         setLoading(true);
         try {
           await axios.post(
-            `http://localhost:8000/handle_approval/${requestId}?approved=${approved}`,
+            `https://network-ai-backend.onrender.com/handle_approval/${requestId}?approved=${approved}`,
             {}, 
             {
               
