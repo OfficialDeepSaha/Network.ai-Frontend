@@ -1216,7 +1216,7 @@ const playAIInstructions = () => {
                   </svg>
                 </div>
                 <div className="flex items-center text-indigo-800">
-                  <h2 className="animate-colorPulse text-2xl bg-gradient-to-r from-purple-500 to-indigo-600 font-semibold">
+                  <h2 className="animate-colorPulse text-2xl bg-gradient-to-r from-purple-500 to-indigo-600 font-semibold" style={{fontWeight: 700}}>
                     Network.ai
                   </h2>
                 </div>
