@@ -1136,7 +1136,7 @@ const playAIInstructions = () => {
               { icon: FaNetworkWired, text: "Connections" },
               { icon: FaUserFriends, text: "My Networks" },
               { icon: FaGlobe, text: "Other Networks" },
-              { icon: FaThumbsUp, text: "Recommendations", highlight: "green" },
+              { icon: FaThumbsUp, text: "Recommendations"},
               { icon: FaCog, text: "Settings" },
               { icon: FaUsers, text: "Group Requests" },
               { icon: FaCommentAlt, text: "Chat" },
