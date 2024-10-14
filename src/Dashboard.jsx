@@ -84,6 +84,7 @@ const Dashboard = () => {
   const [networks, setNetworks] = useState([]);
   const [otherNetworks, setOtherNetworks] = useState([]);
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isOpened, setIsOpened] = useState(false);
   const [isInCall, setIsInCall] = useState(false);
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
@@ -127,6 +128,9 @@ const Dashboard = () => {
   const chatBodyRef = useRef(null);
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
+
+  const toggleDropDown = () => setIsOpened(!isOpened);
+  const navigate = useNavigate();
 
   const initiateVideoCall = async () => {
     closeModal(); // Close modal after confirmation
@@ -1034,6 +1038,12 @@ const Dashboard = () => {
 
 
 
+    const handleLogout = () =>{
+    localStorage.clear();
+    sessionStorage.clear();
+    
+    navigate('/login');
+  }
 
 
 
@@ -1256,13 +1266,33 @@ const playAIInstructions = () => {
                 >
                   <FaComments className="h-6 w-6" />
                 </motion.button>
-                <motion.img
-                  className="h-10 w-10 rounded-full border-2 border-blue-500 cursor-pointer"
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                  alt="User profile"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                />
+              <div className="relative">
+        <motion.img
+          className="h-10 w-10 rounded-full border-2 border-blue-500 cursor-pointer"
+          src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+          alt="User profile"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={toggleDropDown}
+        />
+        {isOpened && (
+          <motion.div
+            className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-10"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+          >
+            <a href="#profile" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+              <FaUser className="mr-2" size={16} />
+              Profile
+            </a>
+            <a href="#signout" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={handleLogout}>
+              <FiLogOut className="mr-2" size={16} />
+              Sign out
+            </a>
+          </motion.div>
+        )}
+      </div>
               </div>
             </div>
           </div>
