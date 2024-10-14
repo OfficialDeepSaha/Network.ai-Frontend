@@ -1125,7 +1125,7 @@ const playAIInstructions = () => {
             <MdOutlineDashboard  className="inline-block mr-2" size={24}/>
             <motion.span
               variants={linkVariants}
-              className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600"
+              className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-700"
             >
               Dashboard
             </motion.span>
