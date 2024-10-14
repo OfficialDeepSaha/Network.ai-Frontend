@@ -1144,7 +1144,7 @@ const playAIInstructions = () => {
               {
                 icon: FaCrown,
                 text: "Upgrade to Premium",
-                highlight: "purple",
+                highlight: "yellow",
               },
             ].map((item, index) => (
               <motion.a
@@ -1154,7 +1154,7 @@ const playAIInstructions = () => {
                   item.active
                     ? "bg-blue-500"
                     : item.highlight
-                    ? `bg-${item.highlight}-500 bg-opacity-20`
+                    ? `bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 transition-all duration-300 shadow-md group bg-${item.highlight}-500 bg-opacity-20`
                     : "hover:bg-blue-500"
                 }`}
                 whileHover={{ scale: 1.05, x: 5 }}
