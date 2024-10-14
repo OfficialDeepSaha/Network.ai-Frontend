@@ -1173,7 +1173,7 @@ const playAIInstructions = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <motion.span variants={linkVariants}>New AI Agent</motion.span>
+            <motion.span variants={linkVariants}>Agent X</motion.span>
           </motion.button>
         </div>
       </motion.aside>
