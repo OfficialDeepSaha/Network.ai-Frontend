@@ -60,6 +60,8 @@ import {
   Typography,
 } from "@mui/material";
 import LoadingProfileMatching from "./LoadingProfileMatching";
+import { FiLogOut } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 // WebRTC-related
 const iceServers = {
