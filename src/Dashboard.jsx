@@ -35,6 +35,7 @@ import {
 } from "react-icons/fa";
 import Modal from "react-modal"; // For confirmation dialog
 import { motion, AnimatePresence } from "framer-motion";
+import { MdOutlineDashboard } from "react-icons/md";
 import { Header } from "./Header";
 import axios from "axios";
 import { ClipLoader } from "react-spinners";
@@ -1120,10 +1121,11 @@ const playAIInstructions = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-{/*             <FaHome className="inline-block mr-2" size={24} /> */}
+             
+            <MdOutlineDashboard  className="inline-block mr-2" size={24}/>
             <motion.span
               variants={linkVariants}
-              className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 animate-pulse"
+              className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 animate-pulse"
             >
               Dashboard
             </motion.span>
