@@ -94,6 +94,9 @@ const Dashboard = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [mediaStream, setMediaStream] = useState(null);
   const [audioLevel, setAudioLevel] = useState(0);
+  const [audioContext, setAudioContext] = useState(null);
+  const [analyser, setAnalyser] = useState(null);
+  const [microphone, setMicrophone] = useState(null);
   const [load , setLoad] = useState(false);
   const [recordingDuration, setRecordingDuration] = useState(0);
   const [groups, setGroups] = useState([]);
@@ -969,6 +972,34 @@ const Dashboard = () => {
     return () => clearInterval(interval);
   }, []);
 
+
+
+// Capture real-time microphone input and update audio levels
+ const captureMicrophone = async () => {
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  const context = new AudioContext();
+  setAudioContext(context);
+
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const analyserNode = context.createAnalyser();
+    const microphoneSource = context.createMediaStreamSource(stream);
+
+    analyserNode.smoothingTimeConstant = 0.8;
+    analyserNode.fftSize = 1024;
+
+    microphoneSource.connect(analyserNode);
+    setAnalyser(analyserNode);
+    setMicrophone(microphoneSource);
+  } catch (error) {
+    console.error("Error accessing microphone:", error);
+  }
+};
+  
+
+
+  
+
   const handleStop = async (blobUrl, blob) => {
     console.log("Blob URL received:", blobUrl);
     console.log("Blob object:", blob);
@@ -1012,31 +1043,50 @@ const Dashboard = () => {
     }
   );
 
-  // Start recording logic
-  const handleStartRecording = () => {
+// Start recording logic
+  const handleStartRecording = async() => {
     console.log("audio button clicked")
     if (!mediaStream) return;
 
     setIsRecording(true);
+    await captureMicrophone();
+    setRecordingDuration(0);
     startRecording();
   };
 
   // Stop recording logic
   const handleStopRecording = () => {
     setIsRecording(false);
+    if (microphone) microphone.disconnect();
+    if (analyser) analyser.disconnect();
+    if (audioContext) audioContext.close();
     stopRecording();
   };
 
-  useEffect(() => {
+ useEffect(() => {
     let interval;
-    if (isRecording) {
+    if (isRecording && analyser) {
+      const dataArray = new Uint8Array(analyser.fftSize);  // fftSize is 2048
       interval = setInterval(() => {
-        setAudioLevel(Math.random());
+        analyser.getByteTimeDomainData(dataArray);  // Get raw waveform data
+
+        // Calculate the root mean square (RMS) of the waveform data
+        const rms = Math.sqrt(
+          dataArray.reduce((sum, value) => sum + (value - 128) ** 2, 0) / dataArray.length
+        );
+        const normalizedLevel = rms / 128; // Normalize the volume level (RMS will be between 0 and 128)
+
+        // Set the normalized audio level (this updates the UI)
+        setAudioLevel(normalizedLevel);
+
+        // Update the recording duration
         setRecordingDuration((prev) => prev + 1);
-      }, 100);
+      }, 100);  // 100ms intervals for UI updates
     }
+
     return () => clearInterval(interval);
-  }, [isRecording]);
+  }, [isRecording, analyser]);
+
 
 
 
