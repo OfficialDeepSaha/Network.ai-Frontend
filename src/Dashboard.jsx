@@ -1890,6 +1890,12 @@ const playAIInstructions = () => {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
+                style={{
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                color: 'transparent',
+                backgroundImage: 'linear-gradient(to right, #9333ea, #ec4899, #ef4444)'
+}}
               >
                 Choose Your Perfect Plan
               </motion.h2>
