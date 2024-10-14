@@ -1123,7 +1123,7 @@ const playAIInstructions = () => {
             <FaHome className="inline-block mr-2" size={24} />
             <motion.span
               variants={linkVariants}
-              className="text-lg font-semibold "
+              className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 animate-pulse"
             >
               Dashboard
             </motion.span>
