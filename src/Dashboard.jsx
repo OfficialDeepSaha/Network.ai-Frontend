@@ -991,6 +991,7 @@ const Dashboard = () => {
 
       setRecommend(response.data.recommendations);
       console.log(response.data.recommendations);
+      playAIRecommendations();
     } catch (error) {
       console.error("Error uploading audio:", error);
     } finally {
@@ -1093,6 +1094,15 @@ const playAIInstructions = () => {
     
   };
 
+
+
+    const playAIRecommendations = () => {
+    const audio = new Audio('/recommendations.wav'); // Path to your AI voice instructions
+    audio.play();
+    
+  };
+  
+  
 
     // Optional cleanup for media stream on component unmount
     useEffect(() => {
