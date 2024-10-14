@@ -1144,7 +1144,7 @@ const playAIInstructions = () => {
               {
                 icon: FaCrown,
                 text: "Upgrade to Premium",
-                highlight: "yellow",
+                highlight: "purple",
               },
             ].map((item, index) => (
               <motion.a
