@@ -1120,10 +1120,10 @@ const playAIInstructions = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <FaHome className="inline-block mr-2" size={24} />
+{/*             <FaHome className="inline-block mr-2" size={24} /> */}
             <motion.span
               variants={linkVariants}
-              className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 animate-pulse"
+              className="text-lg text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 animate-pulse"
             >
               Dashboard
             </motion.span>
