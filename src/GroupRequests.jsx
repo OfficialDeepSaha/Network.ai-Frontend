@@ -22,7 +22,7 @@ export const GroupRequests = ({token , userId}) => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:8000/approval_requests_for_group/?user_id=${userId}`
+        `https://network-ai-backend.onrender.com/approval_requests_for_group/?user_id=${userId}`
       );
       setGroupRequests(response.data);
       if (response.data.length === 0) {
@@ -35,6 +35,7 @@ export const GroupRequests = ({token , userId}) => {
      }  
     } catch (error) {
       console.error("Failed to get group approval requests:", error);
+      speak("I am unable to fetching the group requests.");
     } finally {
       setLoading(false);
     }
@@ -49,7 +50,7 @@ export const GroupRequests = ({token , userId}) => {
     setLoading(true);
     try {
       await axios.post(
-        `http://localhost:8000/handle_approval_other_network/${requestId}?approved=${approved}`,
+        `https://network-ai-backend.onrender.com/handle_approval_other_network/${requestId}?approved=${approved}`,
         {}, // Empty body since you're not sending data in the body
         {
           // Headers should be passed as the third argument
