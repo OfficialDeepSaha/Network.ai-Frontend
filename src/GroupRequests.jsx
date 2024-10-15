@@ -4,9 +4,17 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ClipLoader } from "react-spinners";
 
 export const GroupRequests = ({token , userId}) => {
-    const [groupRequests, setGroupRequests] = useState([]);
+  const [groupRequests, setGroupRequests] = useState([]);
   const [activeCategory, setActiveCategory] = useState("All");
   const [loading, setLoading] = useState(false);
+
+
+  // Function to use speech synthesis to give feedback
+ const speak = (text) => {
+  const utterance = new SpeechSynthesisUtterance(text);
+  window.speechSynthesis.speak(utterance);
+};
+    
 
   // Handle fetching group approval requests
   const handleGroupApprovalRequests = async () => {
@@ -17,6 +25,14 @@ export const GroupRequests = ({token , userId}) => {
         `http://localhost:8000/approval_requests_for_group/?user_id=${userId}`
       );
       setGroupRequests(response.data);
+      if (response.data.length === 0) {
+      // No requests, give voice feedback
+      speak("There are no requests present at this moment.");
+    } else {
+      // Requests available, activate voice recognition
+      speak("You have group requests. Say 'accept all requests' to approve them.");
+      // await listenForCommands();
+     }  
     } catch (error) {
       console.error("Failed to get group approval requests:", error);
     } finally {
