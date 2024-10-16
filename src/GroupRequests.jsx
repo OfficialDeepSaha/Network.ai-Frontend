@@ -30,7 +30,7 @@ export const GroupRequests = ({token , userId}) => {
       speak("There are no requests present at this moment.");
     } else {
       // Requests available, activate voice recognition
-      speak("You have group requests. Say 'accept all requests' to approve them.");
+      speak("You have group requests. Click 'yes' to approve them.");
       // await listenForCommands();
      }  
     } catch (error) {
