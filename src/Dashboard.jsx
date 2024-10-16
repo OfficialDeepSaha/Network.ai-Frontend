@@ -62,6 +62,7 @@ import {
 import LoadingProfileMatching from "./LoadingProfileMatching";
 import { FiLogOut } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import { BsRobot } from "react-icons/bs";
 
 // WebRTC-related
 const iceServers = {
@@ -1365,29 +1366,185 @@ const playAIInstructions = () => {
           {load && recommend==0 ? <LoadingProfileMatching matchingProgress={matchingProgress} /> : ""}
 
 
+           {recommend && recommend.length > 0 ? (
+                    <main className="flex-1 overflow-y-auto bg-white p-8">
+                      <div className="max-w-7xl mx-auto">
+                        <motion.h2
+                          className="text-3xl font-bold mb-6 relative inline-block"
+                          initial={{ opacity: 0, y: -20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.5 }}
+                        >
+                          <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+                            Recommendations
+                          </span>
+                          <motion.span
+                            className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-purple-600"
+                            initial={{ scaleX: 0 }}
+                            animate={{ scaleX: 1 }}
+                            transition={{ duration: 0.5, delay: 0.2 }}
+                          />
+                        </motion.h2>
+                        <motion.nav
+                          className="flex space-x-4 mb-8"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.5, delay: 0.2 }}
+                        ></motion.nav>
+                        <motion.div
+                          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+                          variants={{
+                            initial: { opacity: 0 },
+                            animate: { opacity: 1 },
+                          }}
+                          initial="initial"
+                          animate="animate"
+                        >
+                          <AnimatePresence>
+                            {recommend.map((recomm) => (
+                              <motion.div
+                                key={recomm.id}
+                                className="bg-white shadow-lg rounded-2xl overflow-hidden transform transition-all duration-300"
+                                whileHover={{
+                                  y: -5,
+                                  boxShadow:
+                                    "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+                                }}
+                                layout
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.9 }}
+                                transition={{ duration: 0.3 }}
+                              >
+                                <div className="relative h-40">
+                                  <img
+                                    className="w-full h-full object-cover"
+                                    src={recomm.banner_image}
+                                    alt="Banner"
+                                  />
+                                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60"></div>
+                                </div>
+                                <div className="p-4 relative">
+                                  <motion.div
+                                    className="absolute -top-10 left-4 bg-white rounded-full p-1 shadow-md"
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    transition={{
+                                      delay: 0.1,
+                                      type: "spring",
+                                      stiffness: 500,
+                                      damping: 30,
+                                    }}
+                                  >
+                                    <img
+                                      className="w-16 h-16 rounded-full object-cover border-2 border-white"
+                                      src={recomm.profile_image}
+                                      alt="Profile"
+                                    />
+                                  </motion.div>
+                                  <h3 className="text-lg font-bold mb-2 mt-10">
+                                    {recomm.name}
+                                  </h3>
+                                  <p className="text-blue-600 text-sm font-medium mb-2">
+                                    {recomm.bio}
+                                  </p>
+                                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                                    {recomm.about}
+                                  </p>
+                                  <div className="flex justify-between items-center">
+                                    <div className="flex space-x-2">
+                                      <motion.a
+                                        href={recomm.linkedin}
+                                        whileHover={{ scale: 1.1 }}
+                                        whileTap={{ scale: 0.9 }}
+                                      >
+                                        <FaLinkedin
+                                          className="text-blue-600 hover:text-blue-700"
+                                          size={18}
+                                        />
+                                      </motion.a>
+                                      <motion.a
+                                        href={
+                                          "https://github.com/" + recomm.github
+                                        }
+                                        whileHover={{ scale: 1.1 }}
+                                        whileTap={{ scale: 0.9 }}
+                                      >
+                                        <FaGithub
+                                          className="text-gray-700 hover:text-gray-800"
+                                          size={18}
+                                        />
+                                      </motion.a>
+                                      <motion.a
+                                        href={
+                                          "https://x.com/" +
+                                          recomm.twitter_handle
+                                        }
+                                        whileHover={{ scale: 1.1 }}
+                                        whileTap={{ scale: 0.9 }}
+                                      >
+                                        <FaTwitter
+                                          className="text-blue-400 hover:text-blue-500"
+                                          size={18}
+                                        />
+                                      </motion.a>
+                                    </div>
+                                    <motion.button
+                                      className="text-blue-500 hover:text-blue-600 transition-colors duration-200"
+                                      whileHover={{ scale: 1.1 }}
+                                      whileTap={{ scale: 0.9 }}
+                                    >
+                                      <FaCommentAlt size={18} />
+                                    </motion.button>
+                                  </div>
+                                  <motion.button
+                                    className="w-full mt-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-full text-sm font-medium hover:from-blue-600 hover:to-purple-600 transition-colors duration-200 flex items-center justify-center"
+                                    whileHover={{ scale: 1.03 }}
+                                    whileTap={{ scale: 0.98 }}
+                                    onClick={() =>
+                                      handleSendConnectionRequest(recomm.id)
+                                    }
+                                  >
+                                    <FaUserFriends className="mr-2" size={14} />
+                                    Connect
+                                  </motion.button>
+                                </div>
+                              </motion.div>
+                            ))}
+                          </AnimatePresence>
+                        </motion.div>
+                      </div>
+                    </main>
+                  ) : (
+                    ""
+                  )}
 
 
 
-         
 
 
 
-          
 
-          { !load &&
-            <main className="flex-1 overflow-y-auto bg-gray-50 p-8">
-              {/* AI Integration */}
-              <section className="p-6 bg-white rounded-2xl shadow-xl m-4 overflow-hidden relative flex flex-col items-center">
+
+            
+
+          { !load && recommend.length==0 &&
+
+            <main className="flex-1 overflow-y-auto p-8 relative">
+  
+             <section className="relative p-8 max-w-8xl mx-auto shadow-2xl rounded-3xl overflow-hidden flex flex-col items-center bg-gradient-to-br from-indigo-900 to-black animate-gradient-flow backdrop-blur-lg border border-white/10">
+    
                 <motion.div
-                  className="flex items-center justify-center mb-4 space-x-4"
+                  className="relative z-10 flex items-center justify-center mb-6 space-x-4"
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5 }}
                 >
                   <motion.div className="text-4xl  text-purple-600 justify-between">
-                    <FaRobot />
+                    <BsRobot  className="text-4xl text-yellow-400"/>
+                    <div className="absolute -top-2 left-3  w-3 h-3 bg-green-500 rounded-full animate-pulse" ></div>
                   </motion.div>
-                  <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 mr-4 animate-pulse">
+                  <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-500 mr-4 animate-pulse">
                     AI-Powered Profile Matching
                   </h2>
                   
@@ -1425,121 +1582,7 @@ const playAIInstructions = () => {
                 </div>
 
 
-                {recommend &&  recommend.length> 0  ? (
-   
-   
-   
-   
-   
-   <main className="flex-1 overflow-y-auto bg-white p-8">
-            <div className="max-w-7xl mx-auto">
-              <motion.h2
-                className="text-3xl font-bold mb-6 relative inline-block"
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
-                  Recommendations
-                </span>
-                <motion.span
-                  className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-purple-600"
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ duration: 0.5, delay: 0.2 }}
-                />
-              </motion.h2>
-              <motion.nav
-                className="flex space-x-4 mb-8"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-              >
                 
-              </motion.nav>
-              <motion.div 
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" 
-            variants={{ initial: { opacity: 0 }, animate: { opacity: 1 } }} 
-            initial="initial" 
-            animate="animate" 
-          > 
-            <AnimatePresence> 
-              {recommend.map((recomm) => ( 
-                <motion.div 
-                  key={recomm.id} 
-                  className="bg-white shadow-lg rounded-2xl overflow-hidden transform transition-all duration-300" 
-                  whileHover={{ y: -5, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)" }} 
-                  layout 
-                  initial={{ opacity: 0, scale: 0.9 }} 
-                  animate={{ opacity: 1, scale: 1 }} 
-                  exit={{ opacity: 0, scale: 0.9 }} 
-                  transition={{ duration: 0.3 }} 
-                > 
-                  <div className="relative h-40"> 
-                    <img className="w-full h-full object-cover" src={recomm.banner_image} alt="Banner" /> 
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60"></div> 
-                  </div> 
-                  <div className="p-4 relative"> 
-                    <motion.div 
-                      className="absolute -top-10 left-4 bg-white rounded-full p-1 shadow-md" 
-                      initial={{ scale: 0 }} 
-                      animate={{ scale: 1 }} 
-                      transition={{ delay: 0.1, type: "spring", stiffness: 500, damping: 30 }} 
-                    > 
-                      <img className="w-16 h-16 rounded-full object-cover border-2 border-white" src={recomm.profile_image} alt="Profile" /> 
-                    </motion.div> 
-                    <h3 className="text-lg font-bold mb-2 mt-10">{recomm.name}</h3> 
-                    <p className="text-blue-600 text-sm font-medium mb-2">{recomm.bio}</p> 
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">{recomm.about}</p> 
-                    <div className="flex justify-between items-center"> 
-                      <div className="flex space-x-2"> 
-                        <motion.a href={recomm.linkedin} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}> 
-                          <FaLinkedin className="text-blue-600 hover:text-blue-700" size={18} /> 
-                        </motion.a> 
-                        <motion.a href={'https://github.com/' + recomm.github} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}> 
-                          <FaGithub className="text-gray-700 hover:text-gray-800" size={18} /> 
-                        </motion.a> 
-                        <motion.a href={'https://x.com/' + recomm.twitter_handle} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}> 
-                          <FaTwitter className="text-blue-400 hover:text-blue-500" size={18} /> 
-                        </motion.a> 
-                      </div> 
-                      <motion.button 
-                        className="text-blue-500 hover:text-blue-600 transition-colors duration-200" 
-                        whileHover={{ scale: 1.1 }} 
-                        whileTap={{ scale: 0.9 }} 
-                      > 
-                        <FaCommentAlt size={18} /> 
-                      </motion.button> 
-                    </div> 
-                    <motion.button 
-                      className="w-full mt-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-full text-sm font-medium hover:from-blue-600 hover:to-purple-600 transition-colors duration-200 flex items-center justify-center" 
-                      whileHover={{ scale: 1.03 }} 
-                      whileTap={{ scale: 0.98 }} 
-                      onClick={() => handleSendConnectionRequest(recomm.id)} 
-                    > 
-                      <FaUserFriends className="mr-2" size={14} /> 
-                      Connect 
-                    </motion.button> 
-                  </div> 
-                </motion.div> 
-              ))} 
-            </AnimatePresence> 
-          </motion.div> 
-            
-            </div>
-          </main>
-
-               
-            ) : ""
-   
-   
-   
-   
-   
-   
-   
-   }
-
 
 
    
