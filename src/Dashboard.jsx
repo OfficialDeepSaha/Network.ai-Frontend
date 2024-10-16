@@ -1532,7 +1532,7 @@ const playAIInstructions = () => {
 
             <main className="flex-1 overflow-y-auto p-8 relative">
   
-             <section className="relative p-8 max-w-8xl mx-auto shadow-2xl rounded-3xl overflow-hidden flex flex-col items-center bg-gradient-to-br from-indigo-900 to-black animate-gradient-flow backdrop-blur-lg border border-white/10">
+             <section className="relative p-10 max-w-7xl mx-auto shadow-2xl rounded-3xl overflow-hidden flex flex-col items-center bg-gradient-to-br from-indigo-900 to-black animate-gradient-flow backdrop-blur-lg border border-white/10">
     
                 <motion.div
                   className="relative z-10 flex items-center justify-center mb-6 space-x-4"
