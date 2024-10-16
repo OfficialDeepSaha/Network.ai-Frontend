@@ -1176,6 +1176,12 @@ const playAIInstructions = () => {
     }, [mediaStream]);
 
 
+    const playAIUnderDevelopmentMsg = () => {
+      const audio = new Audio('/AgentX.wav'); // Path to your AI voice instructions
+      audio.play();
+      
+    };
+
 
 
   return (
@@ -1245,7 +1251,7 @@ const playAIInstructions = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <motion.span variants={linkVariants}>Agent X</motion.span>
+            <motion.span variants={linkVariants} onClick={playAIUnderDevelopmentMsg}>Agent X</motion.span>
           </motion.button>
         </div>
       </motion.aside>
