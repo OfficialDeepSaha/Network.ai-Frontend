@@ -772,8 +772,8 @@ const Dashboard = () => {
           setTimeout(() => setIsPaymentSuccessful(false), 12000);
 
           if (success) {
-            alert("Subscription successful!");
-            toast.success("Subscription successfull 🎊")
+            
+            toast.success("Subscription successfull 🎊");
             // Optionally, you can navigate or refresh the page
           } else {
             alert("Failed to store subscription!");
@@ -786,8 +786,8 @@ const Dashboard = () => {
         }
       },
       prefill: {
-        name: {user.name}, // Replace with actual user name
-        email: {user.email}, // Replace with actual user email
+        name: ${user.name}, // Replace with actual user name
+        email: ${user.email}, // Replace with actual user email
       },
       theme: {
         color: "#F37254",
