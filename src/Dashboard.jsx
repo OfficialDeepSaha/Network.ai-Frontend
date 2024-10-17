@@ -1569,7 +1569,7 @@ const playAIInstructions = () => {
              <section className="relative p-10 max-w-7xl mx-auto shadow-2xl rounded-3xl overflow-hidden flex flex-col items-center bg-gradient-to-br from-indigo-900 to-black animate-gradient-flow backdrop-blur-lg border border-white/10">
     
                 <motion.div
-                  className="relative z-10 flex items-center justify-center mb-6 space-x-4"
+                  className="relative z-10 flex items-center justify-center mb-6 space-x-3"
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5 }}
