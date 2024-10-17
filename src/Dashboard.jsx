@@ -1830,7 +1830,7 @@ const playAIInstructions = () => {
                 ))}
               </motion.nav>
               <motion.div
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 min-h-screen"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
                 variants={fadeInUp}
                 initial="initial"
                 animate="animate"
@@ -1863,7 +1863,7 @@ const playAIInstructions = () => {
                         </div>
                       </motion.div>
                     ))
-                  :  <div className="flex justify-center items-center w-full h-[70vh] mt-8">
+                  :  <div className="flex justify-center items-center w-full h-full mt-8">
         <div className="text-center text-xl">
           You don't have any networks.
         </div>
