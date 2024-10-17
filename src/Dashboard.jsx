@@ -1827,7 +1827,7 @@ const playAIInstructions = () => {
                 animate="animate"
               >
                 <AnimatePresence>
-                  {networks &&
+                  {networks && networks.length>0 ?
                     networks.map((netw) => (
                       <motion.div
                         key={netw.id}
@@ -1853,7 +1853,9 @@ const playAIInstructions = () => {
                           <p className="text-gray-600 mb-4">{netw.email}</p>
                         </div>
                       </motion.div>
-                    ))}
+                    ))} :  <div className="text-center text-xl mt-8">
+            You don't have any networks.
+          </div>
                 </AnimatePresence>
               </motion.div>
             </div>
