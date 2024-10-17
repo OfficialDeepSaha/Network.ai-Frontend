@@ -786,8 +786,8 @@ const Dashboard = () => {
         }
       },
       prefill: {
-        name: ${user.name}, // Replace with actual user name
-        email: ${user.email}, // Replace with actual user email
+        name: user.name, // Replace with actual user name
+        email: user.email, // Replace with actual user email
       },
       theme: {
         color: "#F37254",
