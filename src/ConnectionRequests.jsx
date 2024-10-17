@@ -62,7 +62,7 @@ const ConnectionRequests = ({ userId , token}) => {
             </div>
           ) : approvalRequests.length === 0 ? (
           <div className="text-center text-xl mt-8">
-            There are no requests present at this moment.
+            There are no connection requests present at this moment.
           </div>
         ) : (
             <>
