@@ -1853,9 +1853,11 @@ const playAIInstructions = () => {
                           <p className="text-gray-600 mb-4">{netw.email}</p>
                         </div>
                       </motion.div>
-                    ))} :  <div className="text-center text-xl mt-8">
+                    ))
+                  :  <div className="text-center text-xl mt-8">
             You don't have any networks.
           </div>
+                  } 
                 </AnimatePresence>
               </motion.div>
             </div>
