@@ -1104,34 +1104,51 @@ const Dashboard = () => {
 
 
 
-  useEffect(() => {
-    if (activeTab === 'home' && !audioPlayed) {
-      // Request microphone permission when the home tab is active
-      navigator.mediaDevices.getUserMedia({ audio: true })
-        .then((stream) => {
-          setMediaStream(stream);
-          // Play AI instructions after permission is granted
-          playAIInstructions();
-          setAudioPlayed(false)
+  // useEffect(() => {
+  //   if (activeTab === 'home' && !audioPlayed) {
+  //     // Request microphone permission when the home tab is active
+  //     navigator.mediaDevices.getUserMedia({ audio: true })
+  //       .then((stream) => {
+  //         setMediaStream(stream);
+  //         playAIInstructions();
+  //         setAudioPlayed(false)
           
-        })
-        .catch((error) => {
-          console.error('Microphone access denied', error);
-        });
-    }
-  }, [activeTab , audioPlayed]);
+  //       })
+  //       .catch((error) => {
+  //         console.error('Microphone access denied', error);
+  //       });
+  //   }
+  // }, [activeTab , audioPlayed]);
 
-  // Function to play pre-recorded AI voice instructions
-  // const playAIInstructions = () => {
-  //   const audio = new Audio('/welcome.wav'); // Path to your AI voice instructions
-  //   audio.play();
-  //   audio.onended = () => {
-  //     setAudioPlayed(true);
-  //     // Save the played state in sessionStorage to avoid replay on refresh
-  //     sessionStorage.setItem('audioPlayed', 'true');
-  //   };
-    
-  // };
+
+
+
+useEffect(() => {
+    console.log("Checking activeTab:", activeTab);
+    console.log("Audio played:", audioPlayed);
+
+    if (activeTab === 'home' && !audioPlayed) {
+      requestMicrophonePermission();
+    }
+  }, [activeTab, audioPlayed]);
+  
+
+
+   // Function to handle microphone permissions
+  const requestMicrophonePermission = () => {
+    navigator.mediaDevices.getUserMedia({ audio: true })
+      .then((stream) => {
+        setMediaStream(stream);
+        playAIInstructions();
+      })
+      .catch((error) => {
+        console.error('Microphone access denied:', error);
+      });
+  };
+
+
+
+  
 
 
 
