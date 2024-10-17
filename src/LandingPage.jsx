@@ -234,7 +234,7 @@ const LandingPage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.6 }}
             aria-label="Get Started"
-            onClick={()=> navigate('/login')}
+            onClick={()=> navigate('/register')}
           >
             Join Network
           </motion.button>
