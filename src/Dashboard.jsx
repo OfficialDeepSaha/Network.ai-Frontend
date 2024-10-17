@@ -1047,16 +1047,21 @@ const Dashboard = () => {
     }
   );
 
-// Start recording logic
-  const handleStartRecording = async() => {
-    console.log("audio button clicked")
-    if (!mediaStream) return;
-
+  // Start recording logic
+  const handleStartRecording = async () => {
+    console.log("audio button clicked");
+    if (!mediaStream) {
+      console.log('No media stream available, requesting permission...');
+    }
+      const stream = await requestMicrophonePermission();
+      if (!stream) {
+        console.log('Microphone stream unavailable, cannot start recording.');
+        return;
+      }
     setIsRecording(true);
     await captureMicrophone();
-    startRecording();
     setRecordingDuration(0);
-    
+    startRecording();
   };
 
   // Stop recording logic
@@ -1121,31 +1126,38 @@ const Dashboard = () => {
   // }, [activeTab , audioPlayed]);
 
 
+    // Request microphone permissions and set the media stream
+  const requestMicrophonePermission = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      setMediaStream(stream);  // Set the media stream when permission is granted
+      console.log('Microphone permission granted.');
+      return stream;
+    } catch (error) {
+      console.error('Microphone access denied:', error);
+      return null;
+    }
+  };
 
 
-useEffect(() => {
-    console.log("Checking activeTab:", activeTab);
-    console.log("Audio played:", audioPlayed);
 
+
+
+ useEffect(() => {
+    // Sync sessionStorage with state for audio instructions
+    const savedAudioPlayed = sessionStorage.getItem('audioPlayed') === 'true';
+    if (savedAudioPlayed !== audioPlayed) {
+      setAudioPlayed(savedAudioPlayed);
+    }
+
+    // If the home tab is active and audio hasn't been played, request permission and play instructions
     if (activeTab === 'home' && !audioPlayed) {
-      requestMicrophonePermission();
+      requestMicrophonePermission().then(() => {
+        playAIInstructions();
+      });
     }
   }, [activeTab, audioPlayed]);
   
-
-
-   // Function to handle microphone permissions
-  const requestMicrophonePermission = () => {
-    navigator.mediaDevices.getUserMedia({ audio: true })
-      .then((stream) => {
-        setMediaStream(stream);
-        playAIInstructions();
-      })
-      .catch((error) => {
-        console.error('Microphone access denied:', error);
-      });
-  };
-
 
 
   
