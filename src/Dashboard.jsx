@@ -1533,7 +1533,7 @@ const playAIInstructions = () => {
 
           { !load && recommend.length==0 &&
 
-            <main className="flex-1 overflow-y-auto p-8 relative">
+            <main className="flex-1 overflow-y-auto p-8 bg-white relative">
   
              <section className="relative p-10 max-w-7xl mx-auto shadow-2xl rounded-3xl overflow-hidden flex flex-col items-center bg-gradient-to-br from-indigo-900 to-black animate-gradient-flow backdrop-blur-lg border border-white/10">
     
