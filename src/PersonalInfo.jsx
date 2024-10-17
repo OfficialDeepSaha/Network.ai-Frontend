@@ -87,6 +87,7 @@ const PersonalInfo = () => {
         localStorage.setItem("token", data.access_token);
         navigate("/home");
         // Redirect or handle success
+        toast.success("Registration Successful 👍")
       } else {
         console.error("Login failed:", data.detail);
       }
