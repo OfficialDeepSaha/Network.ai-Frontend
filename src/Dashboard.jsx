@@ -2204,7 +2204,7 @@ const playAIInstructions = () => {
 
         {activeTab === "settings" && (
          
-      <main className="flex-1 p-6 overflow-y-auto">
+      <main className="flex-1 p-6 overflow-y-auto bg-white">
       <motion.h1
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
