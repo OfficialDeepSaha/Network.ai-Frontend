@@ -1578,7 +1578,7 @@ const playAIInstructions = () => {
                     <BsRobot  className="text-4xl text-yellow-400"/>
                     <div className="absolute -top-2 left-3  w-3 h-3 bg-green-500 rounded-full animate-pulse" ></div>
                   </motion.div>
-                  <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-500 mr-4 animate-pulse">
+                  <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-500 mr-4 animate-pulse">
                     AI-Powered Profile Matching
                   </h2>
                   
