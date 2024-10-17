@@ -7,7 +7,8 @@ import Dashboard from './Dashboard.jsx'
 import GitHubCallback from './GitHubCallback.jsx'
 import TwitterCallback from './TwitterCallback.jsx'
 import LoginFinal from './LoginFinal.jsx'
-
+import { ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Active = () => {
 
@@ -25,6 +26,7 @@ const Active = () => {
         <Route path='/test' element={<Test1/>} />
         <Route path='/login' element={<LoginFinal/>} />
     </Routes>
+  <ToastContainer />
 </Router>
     
    
