@@ -60,7 +60,11 @@ const ConnectionRequests = ({ userId , token}) => {
             <div className="flex justify-center items-center h-64">
               <ClipLoader size={50} color={"#4A90E2"} loading={loading} />
             </div>
-          ) : (
+          ) : approvalRequests.length === 0 ? (
+          <div className="text-center text-xl mt-8">
+            There are no requests present at this moment.
+          </div>
+        ) : (
             <>
               
    <motion.div
