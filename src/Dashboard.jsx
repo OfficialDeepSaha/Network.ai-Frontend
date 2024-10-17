@@ -1054,8 +1054,9 @@ const Dashboard = () => {
 
     setIsRecording(true);
     await captureMicrophone();
-    setRecordingDuration(0);
     startRecording();
+    setRecordingDuration(0);
+    
   };
 
   // Stop recording logic
