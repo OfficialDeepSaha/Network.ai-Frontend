@@ -1854,9 +1854,11 @@ const playAIInstructions = () => {
                         </div>
                       </motion.div>
                     ))
-                  :  <div className="text-center text-xl mt-8">
-            You don't have any networks.
-          </div>
+                  :  <div className="flex justify-center items-center w-full h-full mt-8">
+        <div className="text-center text-xl">
+          You don't have any networks.
+        </div>
+      </div>
                   } 
                 </AnimatePresence>
               </motion.div>
