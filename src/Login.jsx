@@ -86,6 +86,7 @@ const Login = () => {
         localStorage.setItem("token", data.access_token);
         navigate("/home");
         // Redirect or handle success
+         toast.success("Login Successful 👍")
       } else {
         console.error("Login failed:", data.detail);
       }
