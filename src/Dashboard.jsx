@@ -930,44 +930,56 @@ const Dashboard = () => {
     }
   };
 
-  const pricingPlans = [
-    {
-      title: "Starter",
-      price: "$9/month",
-      features: [
-        "5 projects",
-        "10 GB storage",
-        "Basic analytics",
-        "24/7 support",
-      ],
-      color: "from-emerald-400 to-teal-500",
-    },
-    {
-      title: "Pro",
-      price: "$29/month",
-      features: [
-        "Unlimited projects",
-        "50 GB storage",
-        "Advanced analytics",
-        "Priority support",
-        "Custom domain",
-      ],
-      color: "from-violet-500 to-purple-600",
-      popular: true,
-    },
-    {
-      title: "Ultimate",
-      price: "$49/month",
-      features: [
-        "Unlimited everything",
-        "Advanced security",
-        "Dedicated account manager",
-        "Custom integrations",
-        "24/7 Premium support",
-      ],
-      color: "from-rose-400 to-red-500",
-    },
-  ];
+
+
+const pricingPlans = [
+  {
+    title: "Starter",
+    price: "$9/month",
+    features: [
+      "AI-matched connections (5 per month)",
+      "Basic profile customization",
+      "Access to community discussions",
+      "Standard AI recommendation engine",
+      "Basic analytics for network insights",
+    ],
+    color: "from-emerald-400 to-teal-500",
+  },
+  {
+    title: "Pro",
+    price: "$29/month",
+    features: [
+      "Unlimited AI-matched connections",
+      "Advanced profile customization",
+      "Access to exclusive communities and groups",
+      "Priority placement in AI recommendations",
+      "Advanced analytics for connection insights",
+      "Enhanced AI networking algorithms",
+    ],
+    color: "from-violet-500 to-purple-600",
+    popular: true,
+  },
+  {
+    title: "Ultimate",
+    price: "$49/month",
+    features: [
+      "Unlimited AI-matched connections with priority matching",
+      "Full profile customization with premium templates",
+      "Access to invite-only communities and leadership groups",
+      "AI-powered event invitations based on goals/interests",
+      "Personalized AI networking concierge service",
+      "Premium analytics for deep network insights",
+      "Priority 24/7 support and onboarding assistance",
+    ],
+    color: "from-rose-400 to-red-500",
+  },
+];
+
+
+
+
+
+  
 
   useEffect(() => {
     const interval = setInterval(() => {
