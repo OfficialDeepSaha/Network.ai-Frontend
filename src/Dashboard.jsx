@@ -598,7 +598,8 @@ const Dashboard = () => {
       await axios.post(
         `https://network-ai-backend.onrender.com/send_connection_request/?user_id=${userId}&target_user_id=${recId}`
       );
-      alert("Connection request sent successfully");
+      
+      toast.success("Connection request sent successfully👍");
       await handleGetRecommendations();
     } catch (error) {
       alert("Failed to send connection request: " + error.message);
