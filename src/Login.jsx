@@ -12,6 +12,7 @@ import {
 } from "react-icons/fa";
 import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const GITHUB_CLIENT_ID = "Ov23liql1prInLFdkg1q";
 
@@ -55,6 +56,7 @@ const Login = () => {
 
         console.log("User loggedIn:", data);
         navigate("/home"); // Redirect to homepage
+        toast.success("Login Successful 👍")
       } else {
         alert(data.detail || "Login failed");
       }
