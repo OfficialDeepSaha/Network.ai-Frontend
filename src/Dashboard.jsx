@@ -63,6 +63,7 @@ import LoadingProfileMatching from "./LoadingProfileMatching";
 import { FiLogOut } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { BsRobot } from "react-icons/bs";
+import { toast } from "react-toastify";
 
 // WebRTC-related
 const iceServers = {
@@ -867,6 +868,7 @@ const Dashboard = () => {
       );
 
       alert(`Document uploaded successfully: ${response.data.file_path}`);
+      toast.success("Document uploaded successfully !!")
 
       const trainingFormData = new FormData();
       trainingFormData.append("user_id", userId);
@@ -881,7 +883,7 @@ const Dashboard = () => {
         }
       );
 
-      alert("AI Agent retrained successfully");
+      toast.success("All things done 👍")
     } catch (error) {
       alert("Update or AI retrain failed: " + error.message);
     } finally {
