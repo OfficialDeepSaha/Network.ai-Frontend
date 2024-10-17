@@ -951,7 +951,6 @@ const pricingPlans = [
     features: [
       "Unlimited AI-matched connections",
       "Advanced profile customization",
-      "Access to exclusive communities and groups",
       "Priority placement in AI recommendations",
       "Advanced analytics for connection insights",
       "Enhanced AI networking algorithms",
@@ -964,12 +963,10 @@ const pricingPlans = [
     price: "$49/month",
     features: [
       "Unlimited AI-matched connections with priority matching",
-      "Full profile customization with premium templates",
       "Access to invite-only communities and leadership groups",
       "AI-powered event invitations based on goals/interests",
       "Personalized AI networking concierge service",
       "Premium analytics for deep network insights",
-      "Priority 24/7 support and onboarding assistance",
     ],
     color: "from-rose-400 to-red-500",
   },
