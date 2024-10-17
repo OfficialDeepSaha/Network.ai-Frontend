@@ -1035,6 +1035,7 @@ const Dashboard = () => {
       playAIRecommendations();
     } catch (error) {
       console.error("Error uploading audio:", error);
+      toast.error("Network Problem ❌");
     } finally {
       setLoad(false);
     }
