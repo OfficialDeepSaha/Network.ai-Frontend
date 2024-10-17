@@ -316,7 +316,7 @@ const Dashboard = () => {
     // Only initialize WebSocket if `chatId` is set and `activeChat` is available
     if (activeChat) {
       const ws = new WebSocket(
-        `ws://network-ai-backend.onrender.com/ws/${activeChat.chat_id}?token=${token}`
+        `wss://network-ai-backend.onrender.com/ws/${activeChat.chat_id}?token=${token}`
       );
 
       ws.onopen = () => {
@@ -433,7 +433,7 @@ const Dashboard = () => {
 
     // Open new WebSocket connection
     const socket = new WebSocket(
-      `ws://network-ai-backend.onrender.com/ws/${selectedGroupId}?token=${token}`
+      `wss://network-ai-backend.onrender.com/ws/${selectedGroupId}?token=${token}`
     );
 
     // Handle WebSocket connection open
