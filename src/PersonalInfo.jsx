@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { FaUser, FaEnvelope, FaLock, FaBook, FaGithub, FaGoogle, FaTwitter } from "react-icons/fa";
 import { GoogleLogin } from '@react-oauth/google';
 import axios from "axios";
+import { toast } from "react-toastify";
 
 
 const GITHUB_CLIENT_ID = "Ov23liql1prInLFdkg1q";
@@ -56,6 +57,7 @@ const PersonalInfo = () => {
       
         console.log("User registered:", data);
         navigate("/home"); // Redirect to homepage
+        toast.success("Registration Successful 👍")
       } else {
         alert(data.detail || "Registration failed");
       }
